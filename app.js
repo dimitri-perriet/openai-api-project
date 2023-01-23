@@ -3,8 +3,30 @@ const app = express();
 const mysql = require('mysql2');
 
 app.use(express.static('views'));
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');
+app.set('view engine', 'html');
+app.engine('html', require('ejs').renderFile);
+
+app.use(require("express-session")({
+    secret: "test",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.get('/', function(req, res){
+    if (req.session.loggedin) {
+        res.redirect('/app');
+    }
+    else {
+        res.render(__dirname + '/views/login_page.html');
+    }
+});
+
+app.get('/app', function(req, res){
+    if (req.session.loggedin) {
+        res.render(__dirname + '/views/app.html');
+    } else {
+        res.redirect('/');
+    }
 });
 
 app.listen(3000, function() {
@@ -28,12 +50,13 @@ app.post('/login', (req, res) => {
          function(err, results, fields) {
                 console.log(results);
              if (results.length > 0) {
-                 console.log('User found');
+                 req.session.loggedin = true;
+                 req.session.lastname = results[0].lastname;
+                 req.session.firstname = results[0].firstname;
+                 res.redirect('/app');
+
              } else {
-                 console.log('User not found');
-                 res.sendStatus(401);             }
+                 res.sendStatus(401);
+             }
         });
-    res.sendFile(__dirname + '/views/index.html');
-
-
 });
