@@ -23,7 +23,8 @@ app.get('/', function(req, res){
 
 app.get('/app', function(req, res){
     if (req.session.loggedin) {
-        res.render(__dirname + '/views/app.html');
+        const initial = req.session.lastname.charAt(0) + req.session.firstname.charAt(0);
+        res.render(__dirname + '/views/app.ejs', {initial: initial});
     } else {
         res.redirect('/');
     }
