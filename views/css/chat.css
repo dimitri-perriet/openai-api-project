@@ -49,3 +49,30 @@ body {
 .chat-input form button:hover {
     background-color: #2980b9;
 }
+.chat-messages {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.message-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+.message-bubble.you {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0 10px 10px;
+    align-self: flex-end;
+}
+
+.message-bubble.me {
+    background-color: #e5e5e5;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 10px 10px 0;
+    align-self: flex-start;
+}

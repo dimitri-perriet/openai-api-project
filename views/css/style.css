@@ -57,3 +57,10 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #45a049;
 }
+
+.alert {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}

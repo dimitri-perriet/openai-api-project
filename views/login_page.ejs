@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Connexion</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
@@ -17,7 +18,19 @@
             <input type="password" name="password" id="password" required>
         </div>
         <input type="submit" value="Se connecter">
+        <% if (messages.info) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= messages.info %>
+            </div>
+        <% } %>
     </form>
 </div>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<script>
+    var socket = io();
+</script>
+
 </body>
 </html>
