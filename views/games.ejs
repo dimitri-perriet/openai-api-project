@@ -18,12 +18,18 @@
 <!--            </div>-->
             <h2 class="text-center">Sélectionner un personnage</h2>
             <div class="form-group">
-                <select id="select-character" class="form-control">
-                    <option value="">Sélectionnez un personnage</option>
-                    <% for(var i=0; i<characters.length ; i++) { %>
-                    <option value="<%= characters[i].ID %>"><%= characters[i].name + " - " + characters[i].game_name %></option>
-                        <% } %>
-                </select>
+                <form action="/games_options" method="post">
+                    <select id="select-character" name="selected_character" class="form-control">
+                        <option value="">Sélectionnez un personnage</option>
+                            <% for(var i=0; i<characters.length ; i++) { %>
+                        <option value="<%= characters[i].ID %>"><%= characters[i].name + " - " + characters[i].game_name %></option>
+                            <% } %>
+                    </select>
+                    <br>
+                    <br>
+                    <br>
+                        <button class="btn btn-primary" type="submit">Choisir</button>
+                </form>
             </div>
         </div>
         <div class="col-lg-6">

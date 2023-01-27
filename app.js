@@ -42,14 +42,36 @@ app.get('/', function(req, res){
     }
 });
 
-app.get('/app', function(req, res){
-    if (req.session.loggedin) {
+app.get('/app', async function (req, res) {
+    if (req.session.character) {
         const initial = req.session.lastname.charAt(0) + req.session.firstname.charAt(0);
-        res.render(__dirname + '/views/app.ejs', {initial: initial});
+
+        console.log(req.session.character)
+
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'openai'
+        });
+
+        const character_info = await new Promise((resolve) => {
+            connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
+                              FROM game_character
+                              INNER JOIN games ON game_character.game = games.ID
+                              WHERE game_character.ID = '${req.session.character}'`,
+                function (err, results, fields) {
+                    resolve(results);
+                });
+        });
+
+        console.log(character_info);
+
+        res.render(__dirname + '/views/app.ejs', {initial: initial, character_name: character_info[0].character_name, game_name: character_info[0].game_name});
     } else {
-        res.redirect('/');
+        res.redirect('/games');
     }
 });
+
 app.get('/games', async function (req, res) {
     if (req.session.loggedin) {
         const user_id = req.session.user_id;
@@ -136,6 +158,7 @@ app.post('/games_options', async (req, res) => {
 
         connection.end();
 
+        res.redirect('/games');
     }
 
     if (req.body.character_name) {
@@ -167,9 +190,14 @@ app.post('/games_options', async (req, res) => {
 
         connection.end();
 
-
+        res.redirect('/games');
     }
-    res.redirect('/games');
+
+    if (req.body.selected_character) {
+        req.session.character = req.body.selected_character;
+        res.redirect('/app');
+    }
+
 });
 
 
