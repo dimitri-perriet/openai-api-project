@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 27 jan. 2023 à 09:15
+-- Généré le : ven. 27 jan. 2023 à 11:19
 -- Version du serveur : 5.7.36
 -- Version de PHP : 7.4.26
 
@@ -24,31 +24,48 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `character`
---
-
-DROP TABLE IF EXISTS `character`;
-CREATE TABLE IF NOT EXISTS `character` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `game` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `details` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `games`
 --
 
 DROP TABLE IF EXISTS `games`;
 CREATE TABLE IF NOT EXISTS `games` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`ID`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `games`
+--
+
+INSERT INTO `games` (`ID`, `user_id`, `name`) VALUES
+                                                  (3, 1, 'Test test'),
+                                                  (4, 1, 'Modern Warfare'),
+                                                  (5, 1, 'Test2');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `game_character`
+--
+
+DROP TABLE IF EXISTS `game_character`;
+CREATE TABLE IF NOT EXISTS `game_character` (
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `game` int(11) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    `details` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`ID`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `game_character`
+--
+
+INSERT INTO `game_character` (`ID`, `game`, `name`, `details`) VALUES
+                                                                   (2, 4, 'Mason', NULL),
+                                                                   (3, 4, 'Raid', NULL);
 
 -- --------------------------------------------------------
 
@@ -58,20 +75,20 @@ CREATE TABLE IF NOT EXISTS `games` (
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `mail` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `lastname` varchar(255) NOT NULL,
-  `firstname` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `mail` varchar(255) NOT NULL,
+    `password` varchar(255) NOT NULL,
+    `lastname` varchar(255) NOT NULL,
+    `firstname` varchar(255) NOT NULL,
+    PRIMARY KEY (`ID`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`ID`, `mail`, `password`, `lastname`, `firstname`) VALUES
-(1, 'test@test.fr', '1234', 'Di', 'Pe');
+    (1, 'test@test.fr', '1234', 'Di', 'Pe');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
