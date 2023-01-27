@@ -46,7 +46,7 @@ app.get('/app', async function (req, res) {
     if (req.session.character) {
         const initial = req.session.lastname.charAt(0) + req.session.firstname.charAt(0);
 
-        console.log(req.session.character)
+        // console.log(req.session.character)
 
         const connection = await mysql.createConnection({
             host: 'localhost',
@@ -64,9 +64,9 @@ app.get('/app', async function (req, res) {
                 });
         });
 
-        console.log(character_info);
+        // console.log(character_info);
 
-        res.render(__dirname + '/views/app.ejs', {initial: initial, character_name: character_info[0].character_name, game_name: character_info[0].game_name});
+        res.render(__dirname + '/views/app.ejs', {initial: initial, character_id: req.session.character, character_name: character_info[0].character_name, game_name: character_info[0].game_name});
     } else {
         res.redirect('/games');
     }
@@ -127,7 +127,7 @@ app.post('/login', (req, res) => {
 
      connection.query(`SELECT * FROM user WHERE mail = '${email}' AND password = '${password}'`,
          function(err, results, fields) {
-                console.log(results);
+                // console.log(results);
              if (results.length > 0) {
                  req.session.loggedin = true;
                  req.session.user_id = results[0].ID;
@@ -202,4 +202,20 @@ app.post('/games_options', async (req, res) => {
 
 
 io.on('connection', (socket) => {
+    console.log(socket.id)
+    socket.on('chat message', async (msg, character_id) => {
+        console.log(msg, character_id)
+        const completion = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: msg,
+            temperature: 0,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            max_tokens: 256
+        });
+
+        details = completion.data.choices[0].text.trim();
+        socket.emit('chat receive', details);
+    });
 });
