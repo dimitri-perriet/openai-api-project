@@ -7,6 +7,8 @@ const mysql = require('mysql2');
 const { Server } = require("socket.io");
 const io = new Server(server);
 const flash = require('express-flash');
+const { Configuration, OpenAIApi } = require("openai");
+
 
 app.use(express.static('views'));
 app.set('view engine', 'html');
@@ -22,6 +24,12 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false
 });
+
+const configuration = new Configuration({
+    apiKey: "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",
+});
+
+const openai = new OpenAIApi(configuration);
 
 app.use(sessionMiddleware);
 
@@ -112,7 +120,7 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.post('/games_options', (req, res) => {
+app.post('/games_options', async (req, res) => {
     if (req.body.game_name) {
         const game = req.body.game_name;
         const user_id = req.session.user_id;
@@ -123,7 +131,8 @@ app.post('/games_options', (req, res) => {
             database: 'openai'
         });
 
-        connection.query(`INSERT INTO games (name, user_id) VALUES ('${game}', '${user_id}')`);
+        connection.query(`INSERT INTO games (name, user_id)
+                          VALUES ('${game}', '${user_id}')`);
 
         connection.end();
 
@@ -133,13 +142,28 @@ app.post('/games_options', (req, res) => {
         const character = req.body.character_name;
         const character_game = req.body.character_game;
 
+        const completion = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: "Donnes moi les détails du personnage sous forme de liste rapide" + character + " du jeux vidéo" + character_game,
+            temperature: 0,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            max_tokens: 256
+        });
+
+        details = completion.data.choices[0].text.trim();
+        // console.log(details);
+
         const connection = mysql.createConnection({
             host: 'localhost',
             user: 'root',
             database: 'openai'
         });
 
-        connection.query(`INSERT INTO game_character (game, name) VALUES ('${character_game}', '${character}')`);
+
+        connection.query(`INSERT INTO game_character (game, name, details)
+                          VALUES ('${character_game}', '${character}', '${details}')`);
 
         connection.end();
 
