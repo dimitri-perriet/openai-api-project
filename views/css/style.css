@@ -12,6 +12,10 @@ body {
     border-radius: 10px;
 }
 
+.container.games {
+    width:1000px;
+}
+
 h1 {
     text-align: center;
     margin-bottom: 30px;

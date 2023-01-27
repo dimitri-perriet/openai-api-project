@@ -27,7 +27,7 @@ app.use(sessionMiddleware);
 
 app.get('/', function(req, res){
     if (req.session.loggedin) {
-        res.redirect('/app');
+        res.redirect('/games');
     }
     else {
         res.render(__dirname + '/views/login_page.ejs');
@@ -38,6 +38,13 @@ app.get('/app', function(req, res){
     if (req.session.loggedin) {
         const initial = req.session.lastname.charAt(0) + req.session.firstname.charAt(0);
         res.render(__dirname + '/views/app.ejs', {initial: initial});
+    } else {
+        res.redirect('/');
+    }
+});
+app.get('/games', function(req, res){
+    if (req.session.loggedin) {
+        res.render(__dirname + '/views/games.ejs');
     } else {
         res.redirect('/');
     }
@@ -65,9 +72,10 @@ app.post('/login', (req, res) => {
                 console.log(results);
              if (results.length > 0) {
                  req.session.loggedin = true;
+                 req.session.user_id = results[0].ID;
                  req.session.lastname = results[0].lastname;
                  req.session.firstname = results[0].firstname;
-                 res.redirect('/app');
+                 res.redirect('/games');
 
              } else {
                  req.flash('info', 'Identifiants incorrects');
@@ -75,6 +83,26 @@ app.post('/login', (req, res) => {
              }
         });
 });
+
+app.post('/games_options', (req, res) => {
+    if (req.body.game_name) {
+        const game = req.body.game_name;
+        const user_id = req.session.user_id;
+
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'openai'
+        });
+
+        connection.query(`INSERT INTO games (name, user_id) VALUES ('${game}', '${user_id}')`);
+
+        connection.end();
+
+    }
+    res.redirect('/games');
+});
+
 
 io.on('connection', (socket) => {
 });
