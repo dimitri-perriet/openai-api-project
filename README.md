@@ -4,7 +4,7 @@ README
 Introduction
 ------------
 
-Cette API utilise OpenAI pour créer des conversations avec des personnages de jeux vidéos. Elle permet aux utilisateurs d'enregistrer des jeux vidéos, des personnages liés à ces jeux et de s'identifier pour ouvrir une conversation avec un personnage. Le système envoie automatiquement une réponse en imitant le personnage.
+Cette application utilise OpenAI pour créer des conversations avec des personnages de jeux vidéos. Elle permet aux utilisateurs d'enregistrer des jeux vidéos, des personnages liés à ces jeux et de s'identifier pour ouvrir une conversation avec un personnage. Le système envoie automatiquement une réponse en imitant le personnage.
 
 Fonctionnalités
 ---------------
@@ -22,4 +22,4 @@ Fonctionnalités
 Utilisation
 -----------
 
-Pour utiliser cette API, vous devez d'abord enregistrer un jeu vidéo, un personnage lié à ce jeu et un utilisateur. Ensuite, vous pouvez vous identifier et ouvrir une conversation avec un personnage en envoyant un message. Le système enverra automatiquement une réponse en imitant le personnage. Chaque fois qu'un nouveau message est envoyé dans une conversation, l'historique complet est envoyé à OpenAI.
+Pour utiliser cette application, vous devez d'abord enregistrer un jeu vidéo, un personnage lié à ce jeu et un utilisateur. Ensuite, vous pouvez vous identifier et ouvrir une conversation avec un personnage en envoyant un message. Le système enverra automatiquement une réponse en imitant le personnage. Chaque fois qu'un nouveau message est envoyé dans une conversation, l'historique complet est envoyé à OpenAI.
