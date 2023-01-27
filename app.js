@@ -42,9 +42,37 @@ app.get('/app', function(req, res){
         res.redirect('/');
     }
 });
-app.get('/games', function(req, res){
+app.get('/games', async function (req, res) {
     if (req.session.loggedin) {
-        res.render(__dirname + '/views/games.ejs');
+        const user_id = req.session.user_id;
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'openai'
+        });
+
+        const games_result = await new Promise((resolve) => {
+            connection.query(`SELECT ID, name
+                              FROM games
+                              WHERE user_id = '${user_id}'`,
+                function (err, results, fields) {
+                    resolve(results);
+                });
+        });
+
+        const characters_result = await new Promise((resolve) => {
+            connection.query(`SELECT game_character.ID, game_character.name, games.name AS game_name
+                              FROM game_character
+                              INNER JOIN games ON game_character.game = games.ID
+                              WHERE games.user_id = '${user_id}'`,
+                function (err, results, fields) {
+                    resolve(results);
+                });
+        });
+
+        connection.end();
+
+        res.render(__dirname + '/views/games.ejs', {games: games_result, characters: characters_result});
     } else {
         res.redirect('/');
     }
@@ -98,6 +126,23 @@ app.post('/games_options', (req, res) => {
         connection.query(`INSERT INTO games (name, user_id) VALUES ('${game}', '${user_id}')`);
 
         connection.end();
+
+    }
+
+    if (req.body.character_name) {
+        const character = req.body.character_name;
+        const character_game = req.body.character_game;
+
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'openai'
+        });
+
+        connection.query(`INSERT INTO game_character (game, name) VALUES ('${character_game}', '${character}')`);
+
+        connection.end();
+
 
     }
     res.redirect('/games');

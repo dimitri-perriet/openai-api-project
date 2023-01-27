@@ -9,18 +9,20 @@
 <div class="container games">
     <div class="row">
         <div class="col-lg-6 my-auto">
-            <h2 class="text-center">Sélectionner un jeu vidéo</h2>
-            <div class="form-group">
-                <select id="select-game" class="form-control">
-                    <option value="">Sélectionnez un jeu</option>
-                    <!-- Insérez les options pour les jeux ici -->
-                </select>
-            </div>
+<!--            <h2 class="text-center">Sélectionner un jeu vidéo</h2>-->
+<!--            <div class="form-group">-->
+<!--                <select id="select-game" class="form-control">-->
+<!--                    <option value="">Sélectionnez un jeu</option>-->
+<!--                    &lt;!&ndash; Insérez les options pour les jeux ici &ndash;&gt;-->
+<!--                </select>-->
+<!--            </div>-->
             <h2 class="text-center">Sélectionner un personnage</h2>
             <div class="form-group">
                 <select id="select-character" class="form-control">
                     <option value="">Sélectionnez un personnage</option>
-                    <!-- Insérez les options pour les personnages ici -->
+                    <% for(var i=0; i<characters.length ; i++) { %>
+                    <option value="<%= characters[i].ID %>"><%= characters[i].name + " - " + characters[i].game_name %></option>
+                        <% } %>
                 </select>
             </div>
         </div>
@@ -38,16 +40,18 @@
             <br>
             <br>
             <h2 class="text-center">Créer un personnage</h2>
-            <form>
+            <form action="/games_options" method="post">
                 <div class="form-group">
                     <label for="character-name">Nom du personnage :</label>
-                    <input type="text" class="form-control" id="character-name" name="character-name">
+                    <input type="text" class="form-control" id="character-name" name="character_name">
                 </div>
                 <div class="form-group">
                     <label for="character-game">Jeu vidéo associé :</label>
-                    <select id="character-game" name="character-game" class="form-control">
+                    <select id="character-game" name="character_game" class="form-control">
                         <option value="">Sélectionnez un jeu</option>
-                        <!-- Insérez les options pour les jeux ici -->
+                        <% for(var i=0; i<games.length ; i++) { %>
+                        <option value="<%= games[i].ID %>"><%= games[i].name %></option>
+                        <% } %>
                     </select>
                     <br>
                     <br>
