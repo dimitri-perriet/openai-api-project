@@ -10,10 +10,18 @@ const flash = require('express-flash');
 const { Configuration, OpenAIApi } = require("openai");
 
 
-app.use(express.static('views'));
-app.set('view engine', 'html');
-app.engine('html', require('ejs').renderFile);
+var indexRouter = require('./routes/index');
+var gamesRouter = require('./routes/games');
+var appRouter = require('./routes/chat');
 
+const path = require("path");
+
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static('node_modules/bootstrap/dist/css'))
 app.use('/js', express.static('node_modules/bootstrap/dist/js'))
 
@@ -26,87 +34,25 @@ const sessionMiddleware = session({
 });
 
 const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: "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",
 });
 
 const openai = new OpenAIApi(configuration);
 
 app.use(sessionMiddleware);
 
-app.get('/', function(req, res){
+/*app.get('/', function(req, res){
     if (req.session.loggedin) {
         res.redirect('/games');
     }
     else {
-        res.render(__dirname + '/views/login_page.ejs');
+        res.render(__dirname + '/views/index.ejs');
     }
-});
+});*/
 
-app.get('/app', async function (req, res) {
-    if (req.session.character) {
-        const initial = req.session.lastname.charAt(0) + req.session.firstname.charAt(0);
-
-        // console.log(req.session.character)
-
-        const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            database: 'openai'
-        });
-
-        const character_info = await new Promise((resolve) => {
-            connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
-                              FROM game_character
-                              INNER JOIN games ON game_character.game = games.ID
-                              WHERE game_character.ID = '${req.session.character}'`,
-                function (err, results, fields) {
-                    resolve(results);
-                });
-        });
-
-        // console.log(character_info);
-
-        res.render(__dirname + '/views/app.ejs', {initial: initial, character_id: req.session.character, character_name: character_info[0].character_name, game_name: character_info[0].game_name});
-    } else {
-        res.redirect('/games');
-    }
-});
-
-app.get('/games', async function (req, res) {
-    if (req.session.loggedin) {
-        const user_id = req.session.user_id;
-        const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            database: 'openai'
-        });
-
-        const games_result = await new Promise((resolve) => {
-            connection.query(`SELECT ID, name
-                              FROM games
-                              WHERE user_id = '${user_id}'`,
-                function (err, results, fields) {
-                    resolve(results);
-                });
-        });
-
-        const characters_result = await new Promise((resolve) => {
-            connection.query(`SELECT game_character.ID, game_character.name, games.name AS game_name
-                              FROM game_character
-                              INNER JOIN games ON game_character.game = games.ID
-                              WHERE games.user_id = '${user_id}'`,
-                function (err, results, fields) {
-                    resolve(results);
-                });
-        });
-
-        connection.end();
-
-        res.render(__dirname + '/views/games.ejs', {games: games_result, characters: characters_result});
-    } else {
-        res.redirect('/');
-    }
-});
+app.use('/', indexRouter);
+app.use('/games', gamesRouter);
+app.use('/app', appRouter);
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
@@ -121,13 +67,15 @@ app.post('/login', (req, res) => {
 
     const connection = mysql.createConnection({
         host: 'localhost',
+        port: 8889,
         user: 'root',
+        password: 'root',
         database: 'openai'
     });
 
      connection.query(`SELECT * FROM user WHERE mail = '${email}' AND password = '${password}'`,
          function(err, results, fields) {
-                // console.log(results);
+                console.log(results);
              if (results.length > 0) {
                  req.session.loggedin = true;
                  req.session.user_id = results[0].ID;
@@ -149,7 +97,9 @@ app.post('/games_options', async (req, res) => {
 
         const connection = mysql.createConnection({
             host: 'localhost',
+            port: 8889,
             user: 'root',
+            password: 'root',
             database: 'openai'
         });
 
@@ -164,6 +114,9 @@ app.post('/games_options', async (req, res) => {
     if (req.body.character_name) {
         const character = req.body.character_name;
         const character_game = req.body.character_game;
+
+        //TODO : Retrieve game name from ID
+
 
         const completion = await openai.createCompletion({
             model: "text-davinci-003",
@@ -180,7 +133,9 @@ app.post('/games_options', async (req, res) => {
 
         const connection = mysql.createConnection({
             host: 'localhost',
+            port: 8889,
             user: 'root',
+            password: 'root',
             database: 'openai'
         });
 
@@ -205,9 +160,30 @@ io.on('connection', (socket) => {
     console.log(socket.id)
     socket.on('chat message', async (msg, character_id) => {
         console.log(msg, character_id)
+
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            port: 8889,
+            user: 'root',
+            password: 'root',
+            database: 'openai'
+        });
+
+        const character_info = await new Promise((resolve) => {
+            connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
+                              FROM game_character
+                              INNER JOIN games ON game_character.game = games.ID
+                              WHERE game_character.ID = '${character_id}'`,
+                function (err, results, fields) {
+                    resolve(results);
+                });
+        });
+
+        console.log("Réponds au texte suivant uniquement du texte en imitant " + character_info[0].character_name + " du jeu " + character_info[0].game_name + " : " + msg);
+
         const completion = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt: msg,
+            prompt: "Réponds au texte suivant uniquement du texte en imitant " + character_info[0].character_name + " du jeu " + character_info[0].game_name + " : " + msg,
             temperature: 0,
             top_p: 1,
             frequency_penalty: 0,
