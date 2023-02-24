@@ -13,6 +13,7 @@ const { Configuration, OpenAIApi } = require("openai");
 var indexRouter = require('./routes/index');
 var gamesRouter = require('./routes/games');
 var appRouter = require('./routes/chat');
+var usersRouter = require('./routes/users');
 
 const path = require("path");
 
@@ -21,6 +22,8 @@ const path = require("path");
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static('node_modules/bootstrap/dist/css'))
 app.use('/js', express.static('node_modules/bootstrap/dist/js'))
@@ -53,6 +56,7 @@ app.use(sessionMiddleware);
 app.use('/', indexRouter);
 app.use('/games', gamesRouter);
 app.use('/app', appRouter);
+app.use('/api/users', usersRouter)
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
