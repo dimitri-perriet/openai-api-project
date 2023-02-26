@@ -20,14 +20,14 @@ router.get('/', async function (req, res, next) {
         const character_info = await new Promise((resolve) => {
             connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
                               FROM game_character
-                                       INNER JOIN games ON game_character.game_id = games.ID
+                                       INNER JOIN games ON game_character.game = games.ID
                               WHERE game_character.ID = '${req.session.character}'`,
                 function (err, results, fields) {
                     resolve(results);
                 });
         });
 
-        //console.log(character_info);
+        // console.log(character_info);
 
         res.render('app', {
             initial: initial,

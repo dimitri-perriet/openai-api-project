@@ -14,7 +14,6 @@ var indexRouter = require('./routes/index');
 var gamesRouter = require('./routes/games');
 var appRouter = require('./routes/chat');
 var usersRouter = require('./routes/users');
-var gamesControlRouter = require('./routes/gamescontrol');
 
 const path = require("path");
 
@@ -58,7 +57,6 @@ app.use('/', indexRouter);
 app.use('/games', gamesRouter);
 app.use('/app', appRouter);
 app.use('/api/users', usersRouter)
-app.use('/api/games', gamesControlRouter);
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
@@ -125,8 +123,8 @@ app.post('/games_options', async (req, res) => {
 
 
         const completion = await openai.createCompletion({
-            model: "text-ada-001",
-            prompt: "Donnes moi les détails du personnage sous forme de liste rapide et sans caractères spéciaux telles que (')" + character + " du jeux vidéo" + character_game,
+            model: "text-davinci-003",
+            prompt: "Donnes moi les détails du personnage sous forme de liste rapide" + character + " du jeux vidéo" + character_game,
             temperature: 0,
             top_p: 1,
             frequency_penalty: 0,
@@ -146,7 +144,7 @@ app.post('/games_options', async (req, res) => {
         });
 
 
-        connection.query(`INSERT INTO game_character (game_id, name, details)
+        connection.query(`INSERT INTO game_character (game, name, details)
                           VALUES ('${character_game}', '${character}', '${details}')`);
 
         connection.end();
@@ -178,7 +176,7 @@ io.on('connection', (socket) => {
         const character_info = await new Promise((resolve) => {
             connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
                               FROM game_character
-                              INNER JOIN games ON game_character.game_id = games.ID
+                              INNER JOIN games ON game_character.game = games.ID
                               WHERE game_character.ID = '${character_id}'`,
                 function (err, results, fields) {
                     resolve(results);
@@ -188,7 +186,7 @@ io.on('connection', (socket) => {
         console.log("Réponds au texte suivant uniquement du texte en imitant " + character_info[0].character_name + " du jeu " + character_info[0].game_name + " : " + msg);
 
         const completion = await openai.createCompletion({
-            model: "text-ada-001",
+            model: "text-davinci-003",
             prompt: "Réponds au texte suivant uniquement du texte en imitant " + character_info[0].character_name + " du jeu " + character_info[0].game_name + " : " + msg,
             temperature: 0,
             top_p: 1,
