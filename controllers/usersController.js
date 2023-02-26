@@ -15,7 +15,6 @@ module.exports = {
     // créer un nouvel utilisateur dans la base de données
     createUser: (req, res) => {
         // récupérer les données du corps de la requête
-        console.log(req.body)
         const { firstname, lastname, email, password } = req.body
 
         // vérifier si l'email existe déjà dans la base de données
@@ -97,7 +96,7 @@ module.exports = {
     updateUser: (req, res) => {
         // récupérer l'id du paramètre de route et les données du corps de la requête
         const { id } = req.params
-        const { name, email, password } = req.body
+        const { firstname, lastname, email, password } = req.body
 
         // vérifier si l'email existe déjà dans la base de données pour un autre utilisateur
         db.query(
@@ -118,8 +117,8 @@ module.exports = {
 
                 // mettre à jour l'utilisateur dans la base de données
                 db.query(
-                    'UPDATE user SET name = ?, email = ?, password = ? WHERE id = ?',
-                    [name, email, password, id],
+                    'UPDATE user SET firstname = ?, lastname = ?, mail = ?, password = ?, updated = NOW() WHERE ID = ?',
+                    [firstname, lastname, email, password, id],
                     (err, result) => {
                         if (err) {
                             // renvoyer une erreur en cas d'échec de la requête
@@ -143,7 +142,6 @@ module.exports = {
     deleteUser: (req, res) => {
         // récupérer l'id du paramètre de route
         const id = req.params.id
-        console.log(id)
         // supprimer l'utilisateur dans la base de données
         db.query('DELETE FROM user WHERE ID = ?', [id], (err, result) => {
             if (err) {
