@@ -159,7 +159,7 @@ module.exports = {
     },
 
     login: (req, res) => {
-        console.log (req.body);
+        const email = req.body.email;
         const password = req.body.password;
 
         const connection = connectionRequest()
