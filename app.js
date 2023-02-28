@@ -8,6 +8,7 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const flash = require('express-flash');
 const { Configuration, OpenAIApi } = require("openai");
+const bcrypt = require('bcrypt');
 
 
 var indexRouter = require('./routes/index');
@@ -79,20 +80,19 @@ app.post('/login', (req, res) => {
         database: 'openai'
     });
 
-     connection.query(`SELECT * FROM user WHERE mail = '${email}' AND password = '${password}'`,
-         function(err, results, fields) {
-                console.log(results);
-             if (results.length > 0) {
-                 req.session.loggedin = true;
-                 req.session.user_id = results[0].ID;
-                 req.session.lastname = results[0].lastname;
-                 req.session.firstname = results[0].firstname;
-                 res.redirect('/games');
-
-             } else {
-                 req.flash('info', 'Identifiants incorrects');
-                 res.redirect('/');
-             }
+    connection.query(`SELECT password AS hash FROM user WHERE mail = '${email}'`,
+        function (err, results, fields) {
+            // console.log(results);
+            if (bcrypt.compareSync(password, results[0].hash)) {
+                req.session.loggedin = true;
+                req.session.user_id = results[0].ID;
+                req.session.lastname = results[0].lastname;
+                req.session.firstname = results[0].firstname;
+                res.redirect('/games');
+            } else {
+                req.flash('info', 'Identifiants incorrects');
+                res.redirect('/');
+            }
         });
 });
 

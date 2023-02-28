@@ -59,9 +59,14 @@
                 <div class="form-group">
                     <label for="character-game">Jeu vidéo associé :</label>
                     <select id="character-game" name="character_game" class="form-control">
-                        <option value="">Sélectionnez un jeu</option>
+                        <% if (games) { %>
+                            <option value="">Sélectionnez un jeu</option>
                         <% for(var i=0; i<games.length ; i++) { %>
                         <option value="<%= games[i].ID %>"><%= games[i].name %></option>
+                        <% } %>
+                        <% }
+                        else { %>
+                            <option value="">Aucun jeu</option>
                         <% } %>
                     </select>
                     <br>

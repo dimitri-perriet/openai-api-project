@@ -32,10 +32,6 @@ router.get('/', async function (req, res, next) {
                     resolve(results);
                 });
         });
-
-
-        connection.end();
-
         res.render('games', {games: games_result, characters: characters_result});
     } else {
         res.redirect('/');

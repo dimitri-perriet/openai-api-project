@@ -1,5 +1,6 @@
 // importer le module mysql
 const mysql = require('mysql2')
+const bcrypt = require('bcrypt')
 
 // créer une connexion à la base de données
 const db = mysql.createConnection({
@@ -29,12 +30,14 @@ module.exports = {
                 return res.status(400).json({ message: 'Email already exists' })
             }
 
-            //TODO hasher le mot de passe avec bcrypt ou autre module
+            // hacher le mot de passe
+            const saltRounds = 10;
+            const hash = bcrypt.hashSync(password, saltRounds);
 
             // insérer le nouvel utilisateur dans la base de données
             db.query(
                 'INSERT INTO user (firstname, lastname, mail, password) VALUES (?, ?, ?, ?)',
-                [firstname, lastname, email, password],
+                [firstname, lastname, email, hash],
                 (err, result) => {
                     if (err) {
                         // renvoyer une erreur en cas d'échec de la requête
