@@ -156,5 +156,43 @@ module.exports = {
             // renvoyer un succès avec le nombre de lignes supprimées
             res.json({ message: 'User deleted', rowsAffected: result.affectedRows })
         })
+    },
+
+    login: (req, res) => {
+        console.log (req.body);
+        const password = req.body.password;
+
+        const connection = connectionRequest()
+
+
+        connection.query(`SELECT password AS hash FROM user WHERE mail = '${email}'`,
+            function (err, results, fields) {
+                if (results.length>0 && (bcrypt.compareSync(password, results[0].hash))) {
+                    req.session.loggedin = true;
+                    req.session.user_id = results[0].ID;
+                    req.session.lastname = results[0].lastname;
+                    req.session.firstname = results[0].firstname;
+                    res.redirect('/games');
+                } else {
+                    req.flash('info', 'Identifiants incorrects');
+                    res.redirect('/');
+                }
+            });
+    },
+    loginApi: (req, res) => {
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const connection = connectionRequest()
+
+
+        connection.query(`SELECT password AS hash FROM user WHERE mail = '${email}'`,
+            function (err, results, fields) {
+                if (results.length>0 && (bcrypt.compareSync(password, results[0].hash))) {
+                    res.status(200).json({ message: 'Utilisateur connecté'});
+                } else {
+                    res.status(401).json({ message: 'Identifiants incorrects'});
+                }
+            });
     }
 }

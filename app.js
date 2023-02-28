@@ -68,7 +68,7 @@ server.listen(3000, function() {
 
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/login', (req, res) => {
+/*app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -89,7 +89,7 @@ app.post('/login', (req, res) => {
                 res.redirect('/');
             }
         });
-});
+});*/
 
 app.post('/games_options', async (req, res) => {
     if (req.body.game_name) {
