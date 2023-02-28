@@ -1,14 +1,10 @@
 // importer le module mysql
 const mysql = require('mysql2')
+const connectionRequest = require("../config/connectionRequest");
 
 // créer une connexion à la base de données
-const db = mysql.createConnection({
-    host: 'localhost',
-    port: 8889,
-    user: 'root',
-    password : 'root',
-    database: 'openai'
-})
+const db = connectionRequest()
+
 
 // exporter les fonctions du contrôleur
 module.exports = {

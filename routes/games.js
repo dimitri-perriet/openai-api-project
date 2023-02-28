@@ -1,18 +1,14 @@
 var express = require('express');
 const mysql = require("mysql2");
+const connectionRequest = require("../config/connectionRequest");
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
     if (req.session.loggedin) {
         const user_id = req.session.user_id;
-        const connection = await mysql.createConnection({
-            host: 'localhost',
-            port: 8889,
-            user: 'root',
-            password: 'root',
-            database: 'openai'
-        });
+        const connection = connectionRequest()
+
 
         const games_result = await new Promise((resolve) => {
             connection.query(`SELECT ID, name

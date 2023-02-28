@@ -3,12 +3,12 @@ const session = require('express-session');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const mysql = require('mysql2');
 const { Server } = require("socket.io");
 const io = new Server(server);
 const flash = require('express-flash');
 const { Configuration, OpenAIApi } = require("openai");
 const bcrypt = require('bcrypt');
+const connectionRequest = require('./config/connectionRequest')
 
 
 var indexRouter = require('./routes/index');
@@ -72,13 +72,8 @@ app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const connection = mysql.createConnection({
-        host: 'localhost',
-        port: 8889,
-        user: 'root',
-        password: 'root',
-        database: 'openai'
-    });
+    const connection = connectionRequest()
+
 
     connection.query(`SELECT password AS hash FROM user WHERE mail = '${email}'`,
         function (err, results, fields) {
@@ -101,13 +96,7 @@ app.post('/games_options', async (req, res) => {
         const game = req.body.game_name;
         const user_id = req.session.user_id;
 
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            port: 8889,
-            user: 'root',
-            password: 'root',
-            database: 'openai'
-        });
+        const connection = connectionRequest()
 
         connection.query(`INSERT INTO games (name, user_id)
                           VALUES ('${game}', '${user_id}')`);
@@ -137,13 +126,7 @@ app.post('/games_options', async (req, res) => {
         details = completion.data.choices[0].text.trim();
         // console.log(details);
 
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            port: 8889,
-            user: 'root',
-            password: 'root',
-            database: 'openai'
-        });
+        const connection = connectionRequest()
 
 
         connection.query(`INSERT INTO game_character (game_id, name, details)
@@ -167,13 +150,7 @@ io.on('connection', (socket) => {
     socket.on('chat message', async (msg, character_id) => {
         console.log(msg, character_id)
 
-        const connection = await mysql.createConnection({
-            host: 'localhost',
-            port: 8889,
-            user: 'root',
-            password: 'root',
-            database: 'openai'
-        });
+        const connection = connectionRequest()
 
         const character_info = await new Promise((resolve) => {
             connection.query(`SELECT game_character.name AS character_name, games.name AS game_name, details
