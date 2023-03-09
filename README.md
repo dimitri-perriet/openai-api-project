@@ -1,10 +1,13 @@
 README
 ======
 
+Ce projet est en cours. La clé API OPENAI visible dans les fichiers a été désactivée et sera générée au besoin. L'architecture du code va être revue.
+
 Introduction
 ------------
 
 Cette application utilise OpenAI pour créer des conversations avec des personnages de jeux vidéos. Elle permet aux utilisateurs d'enregistrer des jeux vidéos, des personnages liés à ces jeux et de s'identifier pour ouvrir une conversation avec un personnage. Le système envoie automatiquement une réponse en imitant le personnage.
+
 
 Fonctionnalités
 ---------------
