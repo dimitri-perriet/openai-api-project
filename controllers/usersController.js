@@ -112,12 +112,14 @@ module.exports = {
                     return res.status(400).json({ message: 'Email already exists' })
                 }
 
-                // hasher le mot de passe avec bcrypt ou autre module
+                // hacher le mot de passe
+                const saltRounds = 10;
+                const hash = bcrypt.hashSync(password, saltRounds);
 
                 // mettre à jour l'utilisateur dans la base de données
                 db.query(
                     'UPDATE user SET firstname = ?, lastname = ?, mail = ?, password = ?, updated = NOW() WHERE ID = ?',
-                    [firstname, lastname, email, password, id],
+                    [firstname, lastname, email, hash, id],
                     (err, result) => {
                         if (err) {
                             // renvoyer une erreur en cas d'échec de la requête
