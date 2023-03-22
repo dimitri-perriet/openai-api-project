@@ -146,7 +146,7 @@ app.post('/games_options', async (req, res) => {
 
 
 io.on('connection', (socket) => {
-    console.log(socket.id)
+    // console.log(socket.id)
     socket.on('chat message', async (msg, character_id) => {
         console.log(msg, character_id)
 

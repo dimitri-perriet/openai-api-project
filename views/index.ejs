@@ -23,6 +23,11 @@
                 <%= messages.info %>
             </div>
         <% } %>
+        <% if (messages.success) { %>
+            <div class="alert alert-success" role="alert">
+                <%= messages.success %>
+            </div>
+        <% } %>
     </form>
 </div>
 </body>

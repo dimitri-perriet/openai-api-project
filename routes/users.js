@@ -8,7 +8,8 @@ const {
     getUser,
     createUser,
     login,
-    loginApi
+    loginApi,
+    register
 } = require('../controllers/usersController');
 
 router.get('/', getUsers);
@@ -17,6 +18,7 @@ router.delete('/delete/:id', deleteUser);
 router.put('/update/:id', updateUser);
 router.post('/create', createUser);
 router.post('/login', login);
+router.post('/register', register);
 router.post('/loginapi', loginApi);
 
 module.exports = router;
