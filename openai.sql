@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 22 mars 2023 à 15:47
+-- Généré le : mer. 22 mars 2023 à 15:51
 -- Version du serveur : 5.7.36
 -- Version de PHP : 7.4.26
 
@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS `chat`;
 CREATE TABLE IF NOT EXISTS `chat` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) DEFAULT NULL,
-    `created` datetime DEFAULT NULL,
+    `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated` datetime DEFAULT NULL,
     PRIMARY KEY (`ID`),
     KEY `user_id` (`user_id`)
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `conversation` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `chat_id` int(11) DEFAULT NULL,
     `message` longtext,
-    `created` datetime DEFAULT NULL,
+    `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`ID`),
     KEY `chat_id` (`chat_id`)
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `games` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) DEFAULT NULL,
     `name` varchar(255) DEFAULT NULL,
-    `created` datetime DEFAULT NULL,
+    `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated` datetime DEFAULT NULL,
     PRIMARY KEY (`ID`),
     KEY `user_id` (`user_id`)
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `game_character` (
     `game` int(11) DEFAULT NULL,
     `name` varchar(255) DEFAULT NULL,
     `details` longtext,
-    `created` datetime DEFAULT NULL,
+    `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated` datetime DEFAULT NULL,
     PRIMARY KEY (`ID`),
     KEY `game` (`game`)
@@ -101,11 +101,14 @@ CREATE TABLE IF NOT EXISTS `user` (
     `password` varchar(255) DEFAULT NULL,
     `lastname` varchar(255) DEFAULT NULL,
     `firstname` varchar(255) DEFAULT NULL,
-    `created` datetime DEFAULT NULL,
+    `created` datetime DEFAULT CURRENT_TIMESTAMP,
     `updated` datetime DEFAULT NULL,
     PRIMARY KEY (`ID`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-COMMIT;
+    ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `user`
+--
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
