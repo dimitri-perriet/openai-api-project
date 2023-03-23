@@ -18,6 +18,7 @@ var usersRouter = require('./routes/users');
 var gamesControlRouter = require('./routes/gamescontrol');
 var characterRouter = require('./routes/character');
 var chatRouter = require('./routes/chatAPI');
+var convRouter = require('./routes/conversation');
 
 const path = require("path");
 
@@ -64,6 +65,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/games', gamesControlRouter);
 app.use('/api/characters', characterRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/message', convRouter);
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
