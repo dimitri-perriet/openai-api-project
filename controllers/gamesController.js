@@ -149,5 +149,29 @@ module.exports = {
         })
     },
 
-    //TODO : GetGameOwner
+    getGamesOwner: (req, res) => {
+        // récupérer l'id du paramètre de route
+        const { id } = req.params
+
+        // sélectionner les jeux par son id user dans la base de données
+        db.query('SELECT * FROM games WHERE user_id = ?', [id], (err, result) => {
+            if (err) {
+                // renvoyer une erreur en cas d'échec de la requête
+                return res.status(500).json({ message: err.message })
+            }
+
+            if (result.length === 0) {
+                // renvoyer une erreur si aucun jeu n'existe pas
+                return res.status(404).json({ message: 'Games not found or incorrect user id' })
+            }
+
+            // renvoyer un succès avec les données des jeux
+            const games = result.map(game => {
+                return game
+            })
+
+            res.json(games)
+        })
+    }
+
 }

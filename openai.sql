@@ -79,13 +79,13 @@ CREATE TABLE IF NOT EXISTS `games` (
 DROP TABLE IF EXISTS `game_character`;
 CREATE TABLE IF NOT EXISTS `game_character` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
-    `game` int(11) DEFAULT NULL,
+    `game_id` int(11) DEFAULT NULL,
     `name` varchar(255) DEFAULT NULL,
     `details` longtext,
     `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated` datetime DEFAULT NULL,
     PRIMARY KEY (`ID`),
-    KEY `game` (`game`)
+    KEY `game_id` (`game_id`)
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

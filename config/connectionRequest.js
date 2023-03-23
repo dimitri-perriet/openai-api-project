@@ -1,3 +1,4 @@
+const config = require('./config');
 module.exports = function () {
 
     let mysql = require('mysql2')
@@ -5,10 +6,10 @@ module.exports = function () {
 
     let connection = mysql.createConnection({
         host: 'localhost',
-        port: 8889,
-        user: 'root',
-        password: 'root',
-        database: 'openai'
+        port: config.port,
+        user: config.db_user,
+        password: config.db_pwd,
+        database: config.db_name
     });
 
     connection.connect(function (err) {
