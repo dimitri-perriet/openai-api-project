@@ -15,8 +15,6 @@ module.exports = function () {
     connection.connect(function (err) {
         if (err) {
             console.log(`Connexion à la bdd échouée ${err.stack}`)
-        } else {
-            console.log(`Connexion à la bdd réussi ${connection.threadId}`)
         }
     });
 
