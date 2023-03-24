@@ -41,11 +41,6 @@ const sessionMiddleware = session({
     saveUninitialized: false
 });
 
-const configuration = new Configuration({
-    apiKey: "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",
-});
-
-const openai = new OpenAIApi(configuration);
 
 app.use(sessionMiddleware);
 
@@ -58,9 +53,9 @@ app.use(sessionMiddleware);
     }
 });*/
 
-app.use('/', indexRouter);
+/*app.use('/', indexRouter);
 app.use('/games', gamesRouter);
-app.use('/app', appRouter);
+app.use('/app', appRouter);*/
 app.use('/api/users', usersRouter)
 app.use('/api/games', gamesControlRouter);
 app.use('/api/characters', characterRouter);
@@ -97,7 +92,7 @@ app.use(express.urlencoded({ extended: true }));
         });
 });*/
 
-app.post('/games_options', async (req, res) => {
+/*app.post('/games_options', async (req, res) => {
     if (req.body.game_name) {
         const game = req.body.game_name;
         const user_id = req.session.user_id;
@@ -116,7 +111,6 @@ app.post('/games_options', async (req, res) => {
         const character = req.body.character_name;
         const character_game = req.body.character_game;
 
-        //TODO : Retrieve game name from ID
 
 
         const completion = await openai.createCompletion({
@@ -148,9 +142,10 @@ app.post('/games_options', async (req, res) => {
         res.redirect('/app');
     }
 
-});
+});*/
 
 
+/*
 io.on('connection', (socket) => {
     // console.log(socket.id)
     socket.on('chat message', async (msg, character_id) => {
@@ -183,4 +178,4 @@ io.on('connection', (socket) => {
         details = completion.data.choices[0].text.trim();
         socket.emit('chat receive', details);
     });
-});
+});*/
