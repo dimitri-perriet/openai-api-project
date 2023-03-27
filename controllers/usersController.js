@@ -223,9 +223,10 @@ module.exports = {
         const connection = connectionRequest()
 
 
-        connection.query(`SELECT password AS hash FROM user WHERE mail = '${email}'`,
+        connection.query(`SELECT ID, firstname, lastname, password AS hash FROM user WHERE mail = '${email}'`,
             function (err, results, fields) {
                 if (results.length>0 && (bcrypt.compareSync(password, results[0].hash))) {
+                    delete results[0].hash;
                     res.status(200).json({ 'message': 'Utilisateur connecté', 'user': results[0]});
                 } else {
                     res.status(401).json({ message: 'Identifiants incorrects'});

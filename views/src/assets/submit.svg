@@ -1,0 +1,7 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none">
+    <style>@keyframes slide-15{to{transform:translateX(1px)}}</style>
+    <rect width="14" height="14" x="5.523" y="5" stroke="#0A0A30" stroke-width="1.5" rx="7"/>
+    <path fill="#8B8FD5" stroke="#8B8FD5" stroke-linecap="round" stroke-width=".4"
+          d="M11.781 9.154a.429.429 0 00-.659.549L13.038 12l-1.915 2.297a.429.429 0 10.659.549l2.138-2.566a.428.428 0 000-.56l-2.138-2.566z"
+          style="animation:slide-15 1s infinite alternate both cubic-bezier(1,-.01,0,.98)"/>
+</svg>
