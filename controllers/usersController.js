@@ -13,6 +13,10 @@ module.exports = {
         // récupérer les données du corps de la requête
         const { firstname, lastname, email, password } = req.body
 
+        if (!firstname || !lastname || !email || !password) {
+            return res.status(400).json({ message: 'Missing parameters' })
+        }
+
         // vérifier si l'email existe déjà dans la base de données
         db.query('SELECT * FROM user WHERE mail = ?', [email], (err, result) => {
             if (err) {
@@ -22,7 +26,7 @@ module.exports = {
 
             if (result.length > 0) {
                 // renvoyer une erreur si l'email est déjà utilisé
-                return res.status(400).json({ message: 'Email already exists' })
+                return res.status(409).json({ message: 'Email already exists' })
             }
 
             // hacher le mot de passe
