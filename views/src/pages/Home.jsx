@@ -2,6 +2,7 @@ import React,{ useState } from "react";
 import Swal from 'sweetalert2'
 import { ReactComponent as HomeWave} from '../assets/home-wave.svg';
 import { ReactComponent as SubmitButton} from '../assets/submit.svg';
+import {useNavigate} from "react-router-dom";
 
 
 function closeye()
@@ -40,13 +41,13 @@ async function registerUser(credentials) {
         },
         body: JSON.stringify(credentials)
     })
-        .then(data => data.ok)
+        .then(data => data.status)
         .catch()
 }
 
 async function registerForm() {
     const {value: formValues} = await Swal.fire({
-        title: 'Multiple inputs',
+        title: 'Créer un compte',
         html:
             '<input id="firstname-input" placeholder="Prénom" class="swal2-input">' +
             '<input id="lastname-input" placeholder="Nom" class="swal2-input">' +
@@ -61,32 +62,45 @@ async function registerForm() {
                 "password": document.getElementById('password-input').value
             }
 
-            const response = await registerUser(credidentials);
+            let response = await registerUser(credidentials);
 
-            console.log(response)
+            return response;
 
-            if (response === true) {
-                console.log("User created")
-            } else {
-                console.log("User not created")
-            }
-
-            return [
-                document.getElementById('lastname-input').value,
-                document.getElementById('mail-input').value,
-                document.getElementById('password-input').value
-            ]
-        }
+        }, icon: 'question'
     })
 
-    if (formValues) {
-        Swal.fire(JSON.stringify(formValues))
+    console.log(formValues)
+    if (formValues === 201) {
+        await Swal.fire({
+            title: 'Merci de nous avoir rejoint !',
+            text: "Votre compte a bien été créé. Vous pouvez désormais vous connecter.",
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    }  else if (formValues === 409){
+        await Swal.fire({
+            title: 'Echec de l\'inscription !',
+            text: "Un compte existe déjà avec cette adresse mail.",
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    } else {
+       await Swal.fire({
+            title: 'Echec de l\'inscription !',
+            text: "Une erreur est survenue. Veuillez réessayer en vérifiant votre saisie.",
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 3000
+        })
     }
 }
 
 function Home() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const navigate = useNavigate();
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -98,15 +112,17 @@ function Home() {
             sessionStorage.setItem('user', JSON.stringify(response.user));
             let user = JSON.parse(sessionStorage.getItem('user'));
             // console.log(response)
-            Swal.fire({
+            await Swal.fire({
                 title: 'Bonjour, ' + user.firstname + ' !',
                 text: "Vous allez être redirigé vers votre espace personnel",
                 icon: 'success',
                 showConfirmButton: false,
                 timer: 3000
-            })
+            });
+
+            return navigate('/dashboard')
         } else {
-            Swal.fire({
+            await Swal.fire({
                 title: 'Connexion refusée !',
                 text: response.message,
                 icon: 'error',
