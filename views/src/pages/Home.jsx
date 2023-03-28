@@ -9,7 +9,7 @@ function closeye()
 {
     let x=document.getElementById("animoji");
     let y=document.getElementById("hands");
-    x.style.backgroundImage="url('./monkey_pwd.gif')";
+    x.style.backgroundImage="url('./images/monkey_pwd.gif')";
     y.style.marginTop="0%";
 }
 
@@ -17,7 +17,7 @@ function openeye()
 {
     let x=document.getElementById("animoji");
     let y=document.getElementById("hands");
-    x.style.backgroundImage="url('./monkey.gif')";
+    x.style.backgroundImage="url('./images/monkey.gif')";
     y.style.marginTop="110%";
 }
 
@@ -140,7 +140,7 @@ function Home() {
               <form onSubmit={handleSubmit} className="flex flex-col items-center">
                   <div id="animoji"
                        className="overflow-hidden h-44 w-44 rounded-full m-5 shadow-base bg-[#ffffff] bg-[url('./assets/monkey.gif')] bg-[length:90%_70%] bg-no-repeat bg-center">
-                      <img src="./hands.png" alt="Hands" id="hands" className="mt-28 duration-1000"/>
+                      <img src="./images/hands.png" alt="Hands" id="hands" className="mt-28 duration-1000"/>
                   </div>
                   <div className="mt-5">
                       <input type="text" placeholder="Identifiant" className="placeholder:text-[#707070} shadow-input rounded-[12px] w-50 h-9 pl-7 focus:outline-secondary" onFocus={openeye} onChange={e => setEmail(e.target.value)}/>
