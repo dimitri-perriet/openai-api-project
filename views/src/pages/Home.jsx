@@ -69,7 +69,6 @@ async function registerForm() {
         }, icon: 'question'
     })
 
-    console.log(formValues)
     if (formValues === 201) {
         await Swal.fire({
             title: 'Merci de nous avoir rejoint !',
@@ -86,7 +85,7 @@ async function registerForm() {
             showConfirmButton: false,
             timer: 3000
         })
-    } else {
+    } else if (formValues === 400){
        await Swal.fire({
             title: 'Echec de l\'inscription !',
             text: "Une erreur est survenue. Veuillez réessayer en vérifiant votre saisie.",
@@ -134,7 +133,9 @@ function Home() {
 
   return (
       <div className="grid lg:grid-cols-2">
-          <div><HomeWave class="h-screen"/></div>
+          <div className="h-screen">
+              <HomeWave className="fixed left-0"/>
+          </div>
           <div className="place-self-center w-96">
               <form onSubmit={handleSubmit} className="flex flex-col items-center">
                   <div id="animoji"
