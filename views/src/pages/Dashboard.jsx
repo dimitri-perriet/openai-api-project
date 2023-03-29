@@ -1,21 +1,14 @@
 import React from "react";
+import DashboardCard from "../components/DashboardCard";
 
 function Dashboard() {
-    let user = JSON.parse(sessionStorage.getItem('user'));
-
     return (
-        <div>
-            <div className="flex justify-center">
-                <div className="overflow-hidden -mr-8 mt-14 h-44 w-44 rounded-full shadow-base bg-[#ffffff] bg-[url('./assets/monkey.gif')] bg-[length:90%_70%] bg-no-repeat bg-center">
-                </div>
-                <img src="./images/chat-bubble.svg" alt="chat-bubble"/>
-                <h1 className="absolute font-cofo text-xl ml-36 pt-24">Que souhaites-tu faire, {user.firstname} ?</h1>
-            </div>
+        <div className="grid grid-cols-3 auto-cols-max justify-items-center mt-24">
+            <DashboardCard justifyclass="justify-self-end" image="./icon/add-circle.svg" text="Ajouter un jeu"/>
+            <DashboardCard justifyclass="" image="./icon/person-add.svg" text="Créer un personnage"/>
+            <DashboardCard justifyclass="justify-self-start"image="./icon/game-controller.svg" text="Accèdes à tes jeux"/>
         </div>
-
-
-
-    );
+    )
 }
 
 export default Dashboard;

@@ -13,6 +13,7 @@ module.exports = {
         'primary': '#D0CFEE',
         'secondary': '#8B8FD5',
         'tertiary': '#8DA8E8',
+        'normal': '#0A0A30',
       },
         fontFamily: {
             'cofo': ['cofo-sans-variable', 'sans-serif'],
