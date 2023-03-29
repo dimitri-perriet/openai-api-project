@@ -9,7 +9,7 @@ const openai = openaiAPI()
 async function generateMessage(conv, game, character) {
 
     let messagesList = []
-    messagesList.push({role: "system", content: "Tu es" + character + " du jeu vidéo" + game + ". Tu dois répondre uniquement en imitant ce personnage."})
+    messagesList.push({role: "system", content: "Tu es" + character + " du jeu vidéo" + game + ". Tu dois répondre uniquement en imitant ce personnage et ne pas sortir de ce personnage sous aucun prétexte."})
     for (let i = 0; i < conv.length; i++) {
         if (conv[i].type === "user") {
             messagesList.push({role: "user", content: conv[i].message})

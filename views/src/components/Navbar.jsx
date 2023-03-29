@@ -1,6 +1,11 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
+function signOut() {
+    sessionStorage.clear();
+    window.location.reload();
+}
+
 function Navbar() {
     return (
         <nav className="fixed left-0 top-2/4 bg-white h-56 w-10 shadow-input border-t-2 border-r-2 border-b-2 border-primary rounded-tr-xl rounded-br-xl -my-28">
@@ -26,9 +31,9 @@ function Navbar() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
+                    <button className="w-full" onClick={signOut}>
                         <img className="mx-auto" src="./icon/_navclose-circle.svg" alt="Se déconnecter"/>
-                    </Link>
+                    </button>
                 </li>
             </ul>
         </nav>
