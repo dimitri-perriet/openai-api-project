@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="dashboard" element={
                 <ProtectedRoutes>
+                    <Navbar/>
                     <Dashboard/>
                     <Footer/>
                 </ProtectedRoutes>
