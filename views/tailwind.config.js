@@ -15,9 +15,9 @@ module.exports = {
         'tertiary': '#8DA8E8',
         'normal': '#0A0A30',
       },
-        fontFamily: {
+      fontFamily: {
             'cofo': ['cofo-sans-variable', 'sans-serif'],
-        }
+      }
     },
   },
   plugins: [],
