@@ -1,20 +1,21 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
+import { auth } from '../middleware/auth.middlewares.js';
 
-const {
+import {
     createMessage,
     getMessage,
     getMessages,
     getMessageFromChatID,
     deleteMessage,
     updateMessage
-} = require('../controllers/convController');
+} from '../controllers/convController.js';
 
-router.post('/create', createMessage);
-router.get('/:id', getMessage);
-router.get('/chat/:id', getMessageFromChatID);
-router.put('/update/:id', updateMessage);
-router.delete('/delete/:id', deleteMessage);
-router.get('/', getMessages);
+router.post('/create', auth, createMessage);
+router.get('/:id', auth, getMessage);
+router.get('/chat/:id', auth, getMessageFromChatID);
+router.put('/update/:id', auth, updateMessage);
+router.delete('/delete/:id', auth, deleteMessage);
+router.get('/', auth, getMessages);
 
-module.exports = router;
+export default router;

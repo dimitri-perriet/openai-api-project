@@ -1,20 +1,22 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
+import { auth } from '../middleware/auth.middlewares.js';
 
-const {
+import {
     createCharacter,
     getCharacter,
     getCharacters,
     updateCharacter,
     deleteCharacter,
     getCharactersFromGame
-} = require('../controllers/characterController');
+} from '../controllers/characterController.js';
+import e from "express";
 
-router.post('/create', createCharacter);
-router.get('/:id', getCharacter);
-router.get('/', getCharacters);
-router.get('/game/:id', getCharactersFromGame);
-router.put('/update/:id', updateCharacter);
-router.delete('/delete/:id', deleteCharacter);
+router.post('/create', auth, createCharacter);
+router.get('/:id', auth, getCharacter);
+router.get('/', auth, getCharacters);
+router.get('/game/:id', auth, getCharactersFromGame);
+router.put('/update/:id', auth, updateCharacter);
+router.delete('/delete/:id', auth, deleteCharacter);
 
-module.exports = router;
+export default router;

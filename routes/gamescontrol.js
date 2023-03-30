@@ -1,21 +1,22 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
+import { auth } from '../middleware/auth.middlewares.js';
 
-const {
+import {
     createGame,
     getGame,
     getGames,
     getGamesOwner,
     updateGame,
     deleteGame,
-} = require('../controllers/gamesController');
+} from '../controllers/gamesController.js';
 
 
-router.post('/create', createGame);
-router.get('/:id', getGame);
-router.get('/', getGames);
-router.get('/user/:id', getGamesOwner);
-router.put('/update/:id', updateGame);
-router.delete('/delete/:id', deleteGame);
+router.post('/create', auth, createGame);
+router.get('/:id', auth, getGame);
+router.get('/', auth, getGames);
+router.get('/user/:id', auth, getGamesOwner);
+router.put('/update/:id', auth, updateGame);
+router.delete('/delete/:id', auth, deleteGame);
 
-module.exports = router;
+export default router;

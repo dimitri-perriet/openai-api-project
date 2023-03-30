@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
+import { auth } from '../middleware/auth.middlewares.js';
 
-const {
+import {
     createChat,
     getChat,
     getChats,
@@ -9,14 +10,14 @@ const {
     deleteChat,
     getChatFromCharacterID,
     getChatFromUserID
-} = require('../controllers/chatController');
+} from '../controllers/chatController.js';
 
-router.post('/create', createChat);
-router.get('/:id', getChat);
-router.get('/', getChats);
-router.get('/character/:id', getChatFromCharacterID);
-router.get('/user/:id', getChatFromUserID);
-router.put('/update/:id', updateChat);
-router.delete('/delete/:id', deleteChat);
+router.post('/create', auth, createChat);
+router.get('/:id', auth, getChat);
+router.get('/', auth, getChats);
+router.get('/character/:id', auth, getChatFromCharacterID);
+router.get('/user/:id', auth, getChatFromUserID);
+router.put('/update/:id', auth, updateChat);
+router.delete('/delete/:id', auth, deleteChat);
 
-module.exports = router;
+export default router;

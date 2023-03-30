@@ -1,7 +1,8 @@
-const config = require('./config');
-module.exports = function () {
+import config from './config.js'
+import mysql from 'mysql2'
+function connectionRequest() {
 
-    let mysql = require('mysql2')
+
 
 
     let connection = mysql.createConnection({
@@ -20,3 +21,5 @@ module.exports = function () {
 
     return connection
 }
+
+export default connectionRequest
