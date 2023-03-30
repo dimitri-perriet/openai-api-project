@@ -8,7 +8,6 @@ import {
     updateUser,
     getUser,
     createUser,
-    login,
     loginApi,
     register
 } from '../controllers/usersController.js';
@@ -18,7 +17,6 @@ router.get('/:id', getUser);
 router.delete('/delete/:id', deleteUser);
 router.put('/update/:id', updateUser);
 router.post('/create', createUser);
-router.post('/login', login);
 router.post('/register', register);
 router.post('/loginapi', loginApi);
 

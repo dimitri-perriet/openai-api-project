@@ -1,5 +1,4 @@
 // importer le module mysql
-import mysql from "mysql2";
 import connectionRequest from "../config/connectionRequest.js";
 import openaiAPI from "../config/openaiConfig.js";
 

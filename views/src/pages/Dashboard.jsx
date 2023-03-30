@@ -1,9 +1,12 @@
 import React from "react";
 import DashboardCard from "../components/DashboardCard";
 import Header from "../components/Header";
+import {decodeToken} from "react-jwt";
 
 function Dashboard() {
-    let user = JSON.parse(sessionStorage.getItem("user"));
+    let token = JSON.parse(sessionStorage.getItem("token"));
+    let user = decodeToken(token)
+
     return (
         <div>
             <Header title={"Que souhaites-tu faire, " + user.firstname +" ?"}/>

@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 import { ReactComponent as HomeWave} from '../assets/home-wave.svg';
 import { ReactComponent as SubmitButton} from '../assets/submit.svg';
 import {useNavigate} from "react-router-dom";
+import { decodeToken } from "react-jwt";
 
 
 function closeye()
@@ -107,10 +108,10 @@ function Home() {
             email,
             password
         });
-        if ('user' in response) {
-            sessionStorage.setItem('user', JSON.stringify(response.user));
-            let user = JSON.parse(sessionStorage.getItem('user'));
-            // console.log(response)
+        if ('authorization' in response) {
+            sessionStorage.setItem('token', JSON.stringify(response.authorization));
+            let user = decodeToken(response.authorization);
+
             await Swal.fire({
                 title: 'Bonjour, ' + user.firstname + ' !',
                 text: "Vous allez être redirigé vers votre espace personnel",
