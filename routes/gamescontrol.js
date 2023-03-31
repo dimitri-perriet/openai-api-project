@@ -9,12 +9,14 @@ import {
     getGamesOwner,
     updateGame,
     deleteGame,
+    searchGame
 } from '../controllers/gamesController.js';
 
 
 router.post('/create', auth, createGame);
 router.get('/:id', auth, getGame);
 router.get('/', auth, getGames);
+router.get('/search/:name', auth, searchGame);
 router.get('/user/:id', auth, getGamesOwner);
 router.put('/update/:id', auth, updateGame);
 router.delete('/delete/:id', auth, deleteGame);

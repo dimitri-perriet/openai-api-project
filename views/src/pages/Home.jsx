@@ -1,9 +1,9 @@
-import React,{ useState } from "react";
+import React, {useState} from "react";
 import Swal from 'sweetalert2'
-import { ReactComponent as HomeWave} from '../assets/home-wave.svg';
-import { ReactComponent as SubmitButton} from '../assets/submit.svg';
+import {ReactComponent as HomeWave} from '../assets/home-wave.svg';
+import {ReactComponent as SubmitButton} from '../assets/submit.svg';
 import {useNavigate} from "react-router-dom";
-import { decodeToken } from "react-jwt";
+import {decodeToken} from "react-jwt";
 
 
 function closeye()
@@ -63,9 +63,7 @@ async function registerForm() {
                 "password": document.getElementById('password-input').value
             }
 
-            let response = await registerUser(credidentials);
-
-            return response;
+            return await registerUser(credidentials);
 
         }, icon: 'question'
     })

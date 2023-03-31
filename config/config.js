@@ -7,5 +7,7 @@ export default {
     db_pwd : process.env.DB_PWD,
     db_name : process.env.DB_NAME,
     openai_key : process.env.OPENAI_KEY,
-    secret_jwt : process.env.SECRET_JWT
+    secret_jwt : process.env.SECRET_JWT,
+    secret_igdb : process.env.IGDB_KEY,
+    client_igdb : process.env.IGBD_CLIENT
 }

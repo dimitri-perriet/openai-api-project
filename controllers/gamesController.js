@@ -1,10 +1,52 @@
 // importer le module mysql
 import mysql from 'mysql2'
 import connectionRequest from '../config/connectionRequest.js'
+import config from "../config/config.js";
 
 // créer une connexion à la base de données
 const db = connectionRequest()
 
+
+async function getGamesInfo(name) {
+    const data = await fetch("https://api.igdb.com/v4/games/", {
+        method: 'POST',
+        headers: {
+            "Client-ID": config.client_igdb,
+            "Authorization": "Bearer " + config.secret_igdb,
+        },
+        body: "search \"" + name + "\"; fields name, cover, first_release_date; where version_parent = null;"
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data
+
+        })
+        .catch(err => {
+            return err
+        })
+    return data
+}
+
+async function getGamesCover(coverid) {
+    const imgurl = await fetch("https://api.igdb.com/v4/covers", {
+        method: 'POST',
+        headers: {
+            "Client-ID": config.client_igdb,
+            "Authorization": "Bearer " + config.secret_igdb,
+        },
+        body: "fields url; where id = (" + coverid + ");"
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data
+
+        })
+        .catch(err => {
+            return err
+        })
+
+    return imgurl
+}
 
 // exporter les fonctions du contrôleur
 // créer un nouveau jeu dans la base de données
@@ -41,6 +83,28 @@ export const createGame = (req, res) => {
     })
 }
 
+//chercher un jeu par son nom
+export const searchGame = async (req, res) => {
+    // récupérer l'id du paramètre de route
+    const {name} = req.params
+
+    //appel api à https://api.igdb.com/v4/games/ pour avoir les infos
+    let game = await getGamesInfo(name)
+    if (game.length === 0) {
+        // renvoyer une erreur si le jeu n'existe pas
+        return res.status(404).json({message: 'Game not found'})
+    }
+
+    let imgurl = await getGamesCover(game[0].cover)
+    imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
+    game[0].cover = imgurl[0].url
+
+
+
+    // renvoyer un succès avec les données du jeu
+    res.status(200).json(game[0])
+
+}
 // récupérer un jeu par son id dans la base de données
 export const getGame = (req, res) => {
     // récupérer l'id du paramètre de route

@@ -51,43 +51,6 @@ export const createUser = (req, res) => {
     })
 }
 
-export const register = (req, res) => {
-    // récupérer les données du corps de la requête
-    const {firstname, lastname, email, password} = req.body
-
-    // vérifier si l'email existe déjà dans la base de données
-    db.query('SELECT * FROM user WHERE mail = ?', [email], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
-        if (result.length > 0) {
-            req.flash('info', 'Email déjà utilisée');
-            return res.redirect('/');
-        }
-
-        // hacher le mot de passe
-        const saltRounds = 10;
-        const hash = bcrypt.hashSync(password, saltRounds);
-
-        // insérer le nouvel utilisateur dans la base de données
-        db.query(
-            'INSERT INTO user (firstname, lastname, mail, password) VALUES (?, ?, ?, ?)',
-            [firstname, lastname, email, hash],
-            (err, result) => {
-                if (err) {
-                    // renvoyer une erreur en cas d'échec de la requête
-                    return res.status(500).json({message: err.message})
-                }
-
-                req.flash('success', 'Votre compte a été crée avec succès');
-                return res.redirect('/');
-            }
-        )
-    })
-}
-
 // récupérer un utilisateur par son id dans la base de données
 export const getUser = (req, res) => {
     // récupérer l'id du paramètre de route

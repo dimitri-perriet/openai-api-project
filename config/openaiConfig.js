@@ -1,13 +1,12 @@
 import config from "./config.js";
-import {OpenAIApi, Configuration} from "openai";
+import {Configuration, OpenAIApi} from "openai";
 
 function openaiAPI () {
 
     const configuration = new Configuration({
         apiKey: config.openai_key,
     });
-    const openai = new OpenAIApi(configuration);
-    return openai;
+    return new OpenAIApi(configuration);
 }
 
 export default openaiAPI;
