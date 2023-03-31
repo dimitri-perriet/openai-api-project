@@ -1,5 +1,4 @@
 // importer le module mysql
-import mysql from 'mysql2'
 import connectionRequest from '../config/connectionRequest.js'
 import config from "../config/config.js";
 
@@ -8,7 +7,7 @@ const db = connectionRequest()
 
 
 async function getGamesInfo(name) {
-    const data = await fetch("https://api.igdb.com/v4/games/", {
+    return await fetch("https://api.igdb.com/v4/games/", {
         method: 'POST',
         headers: {
             "Client-ID": config.client_igdb,
@@ -24,11 +23,10 @@ async function getGamesInfo(name) {
         .catch(err => {
             return err
         })
-    return data
 }
 
 async function getGamesCover(coverid) {
-    const imgurl = await fetch("https://api.igdb.com/v4/covers", {
+    return await fetch("https://api.igdb.com/v4/covers", {
         method: 'POST',
         headers: {
             "Client-ID": config.client_igdb,
@@ -44,8 +42,6 @@ async function getGamesCover(coverid) {
         .catch(err => {
             return err
         })
-
-    return imgurl
 }
 
 // exporter les fonctions du contrôleur
@@ -125,7 +121,7 @@ export const getGame = (req, res) => {
         // renvoyer un succès avec les données du jeu
         const games = result[0]
 
-        res.json(games)
+        return res.status(200).json(games)
     })
 }
 
@@ -143,7 +139,7 @@ export const getGames = (req, res) => {
             return game
         })
 
-        res.json(games)
+        return res.status(200).json(games)
     })
 }
 
@@ -184,7 +180,7 @@ export const updateGame = (req, res) => {
                     }
 
                     // renvoyer un succès avec le nombre de lignes modifiées
-                    res.json({message: 'Game updated', rowsAffected: result.affectedRows})
+                    return res.status(200).json({message: 'Game updated', rowsAffected: result.affectedRows})
                 }
             )
         }
@@ -208,7 +204,7 @@ export const deleteGame = (req, res) => {
         }
 
         // renvoyer un succès avec le nombre de lignes supprimées
-        res.json({message: 'Game deleted', rowsAffected: result.affectedRows})
+        return res.status(200).json({message: 'Game deleted', rowsAffected: result.affectedRows})
     })
 }
 
@@ -233,6 +229,6 @@ export const getGamesOwner = (req, res) => {
             return game
         })
 
-        res.json(games)
+        return res.status(200).json(games)
     })
 }
