@@ -10,7 +10,6 @@ import {
     deleteCharacter,
     getCharactersFromGame
 } from '../controllers/characterController.js';
-import e from "express";
 
 router.post('/create', auth, createCharacter);
 router.get('/:id', auth, getCharacter);
