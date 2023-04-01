@@ -92,6 +92,14 @@ async function registerForm() {
             showConfirmButton: false,
             timer: 3000
         })
+    } else if (formValues === 500){
+        await Swal.fire({
+            title: 'Echec de l\'inscription !',
+            text: "Une erreur est survenue. Veuillez réessayer ultérieurement.",
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 3000
+        })
     }
 }
 
@@ -132,8 +140,8 @@ function Home() {
 
   return (
       <div className="grid lg:grid-cols-2">
-          <div className="h-screen">
-              <HomeWave className="fixed left-0"/>
+          <div className="hidden lg:block h-screen">
+              <HomeWave className="hidden lg:block fixed left-0"/>
           </div>
           <div className="place-self-center w-96">
               <form onSubmit={handleSubmit} className="flex flex-col items-center">
@@ -141,11 +149,11 @@ function Home() {
                        className="overflow-hidden h-44 w-44 rounded-full m-5 shadow-base bg-[#ffffff] bg-[url('./assets/monkey.gif')] bg-[length:90%_70%] bg-no-repeat bg-center">
                       <img src="./images/hands.png" alt="Hands" id="hands" className="mt-28 duration-1000"/>
                   </div>
-                  <div className="mt-5">
-                      <input type="text" placeholder="Identifiant" className="placeholder:text-[#707070} shadow-input rounded-[12px] w-50 h-9 pl-7 focus:outline-secondary" onFocus={openeye} onChange={e => setEmail(e.target.value)}/>
+                  <div className="mt-5 shadow-input rounded-[12px]">
+                      <input type="text" placeholder="Identifiant" className="placeholder:text-[#707070}  rounded-[12px] w-50 h-9 pl-7 focus:outline-secondary" onFocus={openeye} onChange={e => setEmail(e.target.value)}/>
                   </div>
-                  <div className="mt-10">
-                      <input type="password" placeholder="Mot de passe" className="shadow-input rounded-[12px] w-50 h-9 pl-7 focus:outline-secondary" onFocus={closeye} onBlur={openeye} onChange={e => setPassword(e.target.value)}/>
+                  <div className="mt-10 shadow-input rounded-[12px]">
+                      <input type="password" placeholder="Mot de passe" className="rounded-[12px] w-50 h-9 pl-7 focus:outline-secondary" onFocus={closeye} onBlur={openeye} onChange={e => setPassword(e.target.value)}/>
                   </div>
                   <button className="focus:outline-none" type="submit">
                     <SubmitButton className="mt-5"/>
