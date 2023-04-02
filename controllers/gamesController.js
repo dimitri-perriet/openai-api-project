@@ -84,14 +84,23 @@ export const searchGame = async (req, res) => {
     // récupérer l'id du paramètre de route
     const {name} = req.params
 
+
     //appel api à https://api.igdb.com/v4/games/ pour avoir les infos
     let game = await getGamesInfo(name)
-    if (game.length === 0) {
+
+    console.log(game)
+    if (game.length === 0 || game[0].cover === undefined) {
         // renvoyer une erreur si le jeu n'existe pas
         return res.status(404).json({message: 'Game not found'})
     }
 
     let imgurl = await getGamesCover(game[0].cover)
+
+    console.log(imgurl)
+    if (imgurl[0].status === 400) {
+        return res.status(404).json({message: 'Game not found'})
+    }
+
     imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
     game[0].cover = imgurl[0].url
 

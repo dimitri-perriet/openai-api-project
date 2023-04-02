@@ -16,17 +16,17 @@ function Navbar() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
+                    <Link to="/game">
                         <img className="mx-auto" src="./icon/_navadd-circle.svg" alt="Ajouter un jeu"/>
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
+                    <Link to="/dashboard">
                         <img className="mx-auto" src="./icon/_navperson-add.svg" alt="Ajouter un personnage"/>
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
+                    <Link to="/dashboard">
                         <img className="mx-auto" src="./icon/_navgame-controller.svg" alt="Jouer"/>
                     </Link>
                 </li>
