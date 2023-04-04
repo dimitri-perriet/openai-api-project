@@ -37,7 +37,7 @@ function Game() {
             <Header title={"Super ! Ajoutons un jeu, " + user.firstname }/>
             <input className={"flex mx-auto"} type="text" placeholder="Nom du jeu" onChange={e => Gamesinfo(e.target.value)}/>
             <div className="grid grid-cols-2 auto-cols-max justify-items-center mt-24">
-                {games.cover ? (<img src={games.cover} alt="image"/>) : (<p>Aucun jeu trouv</p>)}
+                {games.cover ? (<img src={games.cover} alt="image"/>) : (<p>Aucun jeu trouvé</p>)}
                 <p>Ok2</p>
             </div>
         </div>
