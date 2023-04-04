@@ -1,7 +1,8 @@
 README
 ======
 
-Ce projet est en cours. La clé API OPENAI visible dans les fichiers a été désactivée et sera générée au besoin. L'architecture du code va être revue.
+Ce projet est en cours. L'architecture du code va être revue.
+Le project utilise React pour la partie front et Node.js par la partie back. 
 
 Introduction
 ------------
