@@ -89,25 +89,36 @@ export const searchGame = async (req, res) => {
     let game = await getGamesInfo(name)
 
     console.log(game)
-    if (game.length === 0 || game[0].cover === undefined) {
+    if ( game instanceof Error) {
         // renvoyer une erreur si le jeu n'existe pas
-        return res.status(404).json({message: 'Game not found'})
+        return res.status(500).json({message: 'Internal server error'})
+    } else {
+        if (game.length === 0 ) {
+            // renvoyer une erreur si le jeu n'existe pas
+            return res.status(404).json({message: 'Game not found'})
+        } else {
+            let imgurl = await getGamesCover(game[0].cover)
+
+            if (imgurl instanceof Error) {
+                // renvoyer une erreur si le jeu n'existe pas
+                return res.status(500).json({message: 'Internal server error'})
+            }
+
+            if (imgurl[0].status === 400) {
+                return res.status(404).json({message: 'Game not found'})
+            }
+
+            imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
+            game[0].cover = imgurl[0].url
+
+
+
+            // renvoyer un succès avec les données du jeu
+            res.status(200).json(game[0])
+        }
     }
 
-    let imgurl = await getGamesCover(game[0].cover)
 
-    console.log(imgurl)
-    if (imgurl[0].status === 400) {
-        return res.status(404).json({message: 'Game not found'})
-    }
-
-    imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
-    game[0].cover = imgurl[0].url
-
-
-
-    // renvoyer un succès avec les données du jeu
-    res.status(200).json(game[0])
 
 }
 // récupérer un jeu par son id dans la base de données
