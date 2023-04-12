@@ -10,17 +10,19 @@ function Game() {
     const [search, setSearch] = React.useState("");
 
     useEffect(() => {
+        const token = JSON.parse(sessionStorage.getItem("token"));
 
-        var myHeaders = new Headers();
-        myHeaders.append("Bearer", token);
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
 
         const data = setTimeout(() => {
+            var myHeaders = new Headers();
+            myHeaders.append("Bearer", token);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
             fetch("api/games/search/" + search, requestOptions)
                 .then(response => response.json())
                 .then(data => {setGames(data)})
