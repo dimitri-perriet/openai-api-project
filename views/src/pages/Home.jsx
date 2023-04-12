@@ -6,108 +6,109 @@ import {useNavigate} from "react-router-dom";
 import {decodeToken} from "react-jwt";
 
 
-function closeye()
-{
-    let x=document.getElementById("animoji");
-    let y=document.getElementById("hands");
-    x.style.backgroundImage="url('./images/monkey_pwd.gif')";
-    y.style.marginTop="0%";
-}
-
-function openeye()
-{
-    let x=document.getElementById("animoji");
-    let y=document.getElementById("hands");
-    x.style.backgroundImage="url('./images/monkey.gif')";
-    y.style.marginTop="110%";
-}
-
-async function loginUser(credentials) {
-    return fetch('api/users/loginapi', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
-        .catch()
-}
-
-async function registerUser(credentials) {
-    return fetch('api/users/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.status)
-        .catch()
-}
-
-async function registerForm() {
-    const {value: formValues} = await Swal.fire({
-        title: 'Créer un compte',
-        html:
-            '<input id="firstname-input" placeholder="Prénom" class="swal2-input">' +
-            '<input id="lastname-input" placeholder="Nom" class="swal2-input">' +
-            '<input id="mail-input" placeholder="Mail" class="swal2-input">' +
-            '<input id="password-input" type="password" placeholder="Mot de passe" class="swal2-input">',
-        focusConfirm: false,
-        preConfirm: async () => {
-            let credidentials = {
-                "firstname": document.getElementById('firstname-input').value,
-                "lastname": document.getElementById('lastname-input').value,
-                "email": document.getElementById('mail-input').value,
-                "password": document.getElementById('password-input').value
-            }
-
-            return await registerUser(credidentials);
-
-        }, icon: 'question'
-    })
-
-    if (formValues === 201) {
-        await Swal.fire({
-            title: 'Merci de nous avoir rejoint !',
-            text: "Votre compte a bien été créé. Vous pouvez désormais vous connecter.",
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 3000
-        })
-    }  else if (formValues === 409){
-        await Swal.fire({
-            title: 'Echec de l\'inscription !',
-            text: "Un compte existe déjà avec cette adresse mail.",
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 3000
-        })
-    } else if (formValues === 400){
-       await Swal.fire({
-            title: 'Echec de l\'inscription !',
-            text: "Une erreur est survenue. Veuillez réessayer en vérifiant votre saisie.",
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 3000
-        })
-    } else if (formValues === 500){
-        await Swal.fire({
-            title: 'Echec de l\'inscription !',
-            text: "Une erreur est survenue. Veuillez réessayer ultérieurement.",
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 3000
-        })
-    }
-}
 
 function Home() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const navigate = useNavigate();
 
+
+    function closeye()
+    {
+        let x=document.getElementById("animoji");
+        let y=document.getElementById("hands");
+        x.style.backgroundImage="url('./images/monkey_pwd.gif')";
+        y.style.marginTop="0%";
+    }
+
+    function openeye()
+    {
+        let x=document.getElementById("animoji");
+        let y=document.getElementById("hands");
+        x.style.backgroundImage="url('./images/monkey.gif')";
+        y.style.marginTop="110%";
+    }
+
+    async function loginUser(credentials) {
+        return fetch('api/users/loginapi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+            .then(data => data.json())
+            .catch()
+    }
+
+    async function registerUser(credentials) {
+        return fetch('api/users/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+            .then(data => data.status)
+            .catch()
+    }
+
+    async function registerForm() {
+        const {value: formValues} = await Swal.fire({
+            title: 'Créer un compte',
+            html:
+                '<input id="firstname-input" placeholder="Prénom" class="swal2-input">' +
+                '<input id="lastname-input" placeholder="Nom" class="swal2-input">' +
+                '<input id="mail-input" placeholder="Mail" class="swal2-input">' +
+                '<input id="password-input" type="password" placeholder="Mot de passe" class="swal2-input">',
+            focusConfirm: false,
+            preConfirm: async () => {
+                let credidentials = {
+                    "firstname": document.getElementById('firstname-input').value,
+                    "lastname": document.getElementById('lastname-input').value,
+                    "email": document.getElementById('mail-input').value,
+                    "password": document.getElementById('password-input').value
+                }
+
+                return await registerUser(credidentials);
+
+            }, icon: 'question'
+        })
+
+        if (formValues === 201) {
+            await Swal.fire({
+                title: 'Merci de nous avoir rejoint !',
+                text: "Votre compte a bien été créé. Vous pouvez désormais vous connecter.",
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        }  else if (formValues === 409){
+            await Swal.fire({
+                title: 'Echec de l\'inscription !',
+                text: "Un compte existe déjà avec cette adresse mail.",
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        } else if (formValues === 400){
+            await Swal.fire({
+                title: 'Echec de l\'inscription !',
+                text: "Une erreur est survenue. Veuillez réessayer en vérifiant votre saisie.",
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        } else if (formValues === 500){
+            await Swal.fire({
+                title: 'Echec de l\'inscription !',
+                text: "Une erreur est survenue. Veuillez réessayer ultérieurement.",
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        }
+    }
     const handleSubmit = async e => {
         e.preventDefault();
         const response = await loginUser({
