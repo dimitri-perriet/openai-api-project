@@ -18,7 +18,6 @@ async function getGamesInfo(name) {
         .then(response => response.json())
         .then(data => {
             return data
-
         })
         .catch(err => {
             return err
@@ -48,7 +47,7 @@ async function getGamesCover(coverid) {
 // créer un nouveau jeu dans la base de données
 export const createGame = (req, res) => {
     // récupérer les données du corps de la requête
-    const {user_id, name} = req.body
+    const {user_id, name, cover} = req.body
 
     // vérifier si le jeu existe déjà dans la base de données
     db.query('SELECT * FROM games WHERE user_id = ? AND name = ?', [user_id, name], (err, result) => {
@@ -59,13 +58,13 @@ export const createGame = (req, res) => {
 
         if (result.length > 0) {
             // renvoyer une erreur si le jeu est déjà utilisé
-            return res.status(400).json({message: 'Game already exists'})
+            return res.status(409).json({message: 'Game already exists'})
         }
 
         // insérer le nouveau jeu dans la base de données
         db.query(
-            'INSERT INTO games (user_id, name) VALUES (?, ?)',
-            [user_id, name],
+            'INSERT INTO games (user_id, name, cover) VALUES (?, ?, ?)',
+            [user_id, name, cover],
             (err, result) => {
                 if (err) {
                     // renvoyer une erreur en cas d'échec de la requête
