@@ -6,6 +6,13 @@ const db = connectionRequest()
 
 const openai = openaiAPI()
 
+/**
+ * Generate a message from a conversation
+ * @param conv : []
+ * @param game : string
+ * @param character : string
+ * @returns string
+ */
 async function generateMessage(conv, game, character) {
 
     let messagesList = []
@@ -29,6 +36,12 @@ async function generateMessage(conv, game, character) {
     return completion.data.choices[0].message.content.trim();
 }
 
+/**
+ * Create a message in a chat
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const createMessage = (req, res) => {
     const {chat_id, message} = req.body
 
@@ -90,6 +103,12 @@ export const createMessage = (req, res) => {
 }
 
 
+/**
+ * Get all messages
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getMessages = (req, res) => {
 
     // sélectionner le jeu par son id dans la base de données
@@ -109,6 +128,12 @@ export const getMessages = (req, res) => {
     })
 }
 
+/**
+ * Get a message by message id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getMessage = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params
@@ -132,6 +157,12 @@ export const getMessage = (req, res) => {
 
 }
 
+/**
+ * Get all messages from a chat
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getMessageFromChatID = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params
@@ -157,6 +188,12 @@ export const getMessageFromChatID = (req, res) => {
     })
 }
 
+/**
+ * Delete a message by message id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const deleteMessage = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params
@@ -191,6 +228,12 @@ export const deleteMessage = (req, res) => {
     })
 }
 
+/**
+ * Update a message by message id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const updateMessage = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params

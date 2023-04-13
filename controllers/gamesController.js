@@ -5,7 +5,11 @@ import config from "../config/config.js";
 // créer une connexion à la base de données
 const db = connectionRequest()
 
-
+/**
+ * Search for a game by name
+ * @param name : string
+ * @returns json
+ */
 async function getGamesInfo(name) {
     return await fetch("https://api.igdb.com/v4/games/", {
         method: 'POST',
@@ -24,6 +28,11 @@ async function getGamesInfo(name) {
         })
 }
 
+/**
+ * Look for a game cover by its cover id
+ * @param coverid : number
+ * @returns json
+ */
 async function getGamesCover(coverid) {
     return await fetch("https://api.igdb.com/v4/covers", {
         method: 'POST',
@@ -43,8 +52,12 @@ async function getGamesCover(coverid) {
         })
 }
 
-// exporter les fonctions du contrôleur
-// créer un nouveau jeu dans la base de données
+/**
+ * Create a game with the given data
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const createGame = (req, res) => {
     // récupérer les données du corps de la requête
     const {user_id, name, cover} = req.body
@@ -78,7 +91,12 @@ export const createGame = (req, res) => {
     })
 }
 
-//chercher un jeu par son nom
+/**
+ * Search a game by name
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const searchGame = async (req, res) => {
     // récupérer l'id du paramètre de route
     const {name} = req.params
@@ -121,7 +139,13 @@ export const searchGame = async (req, res) => {
 
 
 }
-// récupérer un jeu par son id dans la base de données
+
+/**
+ * Get a game by id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getGame = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params
@@ -145,7 +169,12 @@ export const getGame = (req, res) => {
     })
 }
 
-// récupérer tous les jeux dans la base de données
+/**
+ * Get all games
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getGames = (req, res) => {
     // sélectionner tous les jeux dans la base de données
     db.query('SELECT * FROM games', (err, result) => {
@@ -163,7 +192,12 @@ export const getGames = (req, res) => {
     })
 }
 
-// modifier un jeu par son id dans la base de données
+/**
+ * Update a game with the given data
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const updateGame = (req, res) => {
     // récupérer l'id du paramètre de route et les données du corps de la requête
     const {id} = req.params
@@ -207,7 +241,12 @@ export const updateGame = (req, res) => {
     )
 }
 
-// supprimer un jeu par son id dans la base de données
+/**
+ * Delete a game by id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const deleteGame = (req, res) => {
     // récupérer l'id du paramètre de route
     const id = req.params.id
@@ -228,6 +267,12 @@ export const deleteGame = (req, res) => {
     })
 }
 
+/**
+ * Get all games by user id
+ * @param req : object
+ * @param res : object
+ * @returns res
+ */
 export const getGamesOwner = (req, res) => {
     // récupérer l'id du paramètre de route
     const {id} = req.params
