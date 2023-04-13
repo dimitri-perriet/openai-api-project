@@ -88,7 +88,6 @@ export const searchGame = async (req, res) => {
     //appel api à https://api.igdb.com/v4/games/ pour avoir les infos
     let game = await getGamesInfo(name)
 
-    console.log(game)
     if ( game instanceof Error) {
         // renvoyer une erreur si le jeu n'existe pas
         return res.status(500).json({message: 'Internal server error'})
@@ -108,6 +107,8 @@ export const searchGame = async (req, res) => {
                 return res.status(404).json({message: 'Game not found'})
             }
 
+            let date = new Date(game[0].first_release_date * 1000)
+            game[0].first_release_date = date.toLocaleDateString("fr")
             imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
             game[0].cover = imgurl[0].url
 
