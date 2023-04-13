@@ -21,7 +21,7 @@ function Navbar() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/dashboard">
+                    <Link to="/character">
                         <img className="mx-auto" src="./icon/_navperson-add.svg" alt="Ajouter un personnage"/>
                     </Link>
                 </li>
