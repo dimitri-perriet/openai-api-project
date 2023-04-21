@@ -13,25 +13,25 @@ function Character() {
     let [currentGame, setCurrentGame] = React.useState(null);
 
 
-
-
-    let myHeaders = new Headers();
-    myHeaders.append("Bearer", token);
-
-    let requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-    };
-
-    fetch("api/games/user/" + user.id, requestOptions)
-        .then(response => response.json())
-        .then(data => {setGame(data)})
-        .catch(error => console.log('error', error));
-
     function handleEmptyImg() {
         const swiperEl = document.querySelector('swiper-container');
         setCurrentGame(game[swiperEl.swiper.activeIndex])
     }
+
+    useEffect(() => {
+        let myHeaders = new Headers();
+        myHeaders.append("Bearer", token);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        fetch("api/games/user/" + user.id, requestOptions)
+            .then(response => response.json())
+            .then(data => {setGame(data)})
+            .catch(error => console.log('error', error));
+    }, []);
 
     useEffect(() => {
         console.log(currentGame)
