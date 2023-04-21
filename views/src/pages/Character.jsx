@@ -19,6 +19,9 @@ function Character() {
     }
 
     useEffect(() => {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const user = decodeToken(token);
+
         let myHeaders = new Headers();
         myHeaders.append("Bearer", token);
 
@@ -34,7 +37,6 @@ function Character() {
     }, []);
 
     useEffect(() => {
-        console.log(currentGame)
     }, [currentGame]);
 
     return (
@@ -44,7 +46,7 @@ function Character() {
             {game &&
                 <div>
                     <swiper-container class="mySwiper" effect="cards" grab-cursor="true">
-                        { game.map(singleGame => <swiper-slide> <img src={singleGame.cover} alt={singleGame.name}/> </swiper-slide>)}
+                        { game.map(singleGame => <swiper-slide key={singleGame.ID}> <img src={singleGame.cover} alt={singleGame.name}/> </swiper-slide>)}
                     </swiper-container>
 
                     <button className={"mx-auto"} onClick={handleEmptyImg}>Ok</button>
