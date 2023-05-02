@@ -11,14 +11,14 @@ function Character() {
     const user = decodeToken(token);
     let [game, setGame] = React.useState(null);
     let [currentGame, setCurrentGame] = React.useState(null);
-    let [gameChoosen, setGameChoosen] = React.useState(false);
+    let [gameChosen, setGameChosen] = React.useState(false);
 
 
     function handleEmptyImg() {
         const swiperEl = document.querySelector('swiper-container');
         setCurrentGame(game[swiperEl.swiper.activeIndex])
-        setGameChoosen(true)
-        console.log(gameChoosen)
+        setGameChosen(true)
+        console.log(gameChosen)
     }
 
     useEffect(() => {
@@ -47,7 +47,7 @@ function Character() {
         <div>
             <Header title={"Top ! Ajoutons un personnage, " + user.firstname + " !"}/>
 
-            {(game && !gameChoosen) &&
+            {(game && !gameChosen) &&
                 <div className={"flex content-center flex-col"}>
                     <swiper-container class="mySwiper" effect="cards" grab-cursor="true">
                         { game.map(singleGame => <swiper-slide key={singleGame.ID}> <img src={singleGame.cover} alt={singleGame.name}/> </swiper-slide>)}
