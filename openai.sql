@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : sam. 25 mars 2023 à 01:28
+-- Généré le : mar. 06 juin 2023 à 07:37
 -- Version du serveur : 5.7.39
 -- Version de PHP : 7.4.33
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `openai`
 --
+CREATE DATABASE IF NOT EXISTS `openai` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `openai`;
 
 -- --------------------------------------------------------
 
@@ -33,7 +35,7 @@ CREATE TABLE `chat` (
                         `user_id` int(11) DEFAULT NULL,
                         `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         `updated` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -48,7 +50,7 @@ CREATE TABLE `conversation` (
                                 `message` longtext,
                                 `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 `updated` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -61,8 +63,9 @@ CREATE TABLE `games` (
                          `user_id` int(11) DEFAULT NULL,
                          `name` varchar(255) DEFAULT NULL,
                          `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         `updated` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+                         `updated` datetime DEFAULT NULL,
+                         `cover` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -77,7 +80,7 @@ CREATE TABLE `game_character` (
                                   `details` longtext,
                                   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `updated` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -93,7 +96,7 @@ CREATE TABLE `user` (
                         `firstname` varchar(255) DEFAULT NULL,
                         `created` datetime DEFAULT CURRENT_TIMESTAMP,
                         `updated` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Index pour les tables déchargées
@@ -104,6 +107,7 @@ CREATE TABLE `user` (
 --
 ALTER TABLE `chat`
     ADD PRIMARY KEY (`ID`),
+    ADD UNIQUE KEY `character_id` (`character_id`),
     ADD KEY `user_id` (`user_id`);
 
 --
@@ -166,6 +170,35 @@ ALTER TABLE `game_character`
 --
 ALTER TABLE `user`
     MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `chat`
+--
+ALTER TABLE `chat`
+    ADD CONSTRAINT `Character ID` FOREIGN KEY (`character_id`) REFERENCES `game_character` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `User ID` FOREIGN KEY (`user_id`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `conversation`
+--
+ALTER TABLE `conversation`
+    ADD CONSTRAINT `Chat ID` FOREIGN KEY (`chat_id`) REFERENCES `chat` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `games`
+--
+ALTER TABLE `games`
+    ADD CONSTRAINT `User_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `game_character`
+--
+ALTER TABLE `game_character`
+    ADD CONSTRAINT `Game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
