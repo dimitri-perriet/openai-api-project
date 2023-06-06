@@ -47,7 +47,7 @@ function Character() {
         <div>
             <Header title={"Top ! Ajoutons un personnage, " + user.firstname + " !"}/>
 
-            {(game && !gameChosen) &&
+            {(Array.isArray(game) && !gameChosen) &&
                 <div className={"flex content-center flex-col"}>
                     <swiper-container class="mySwiper" effect="cards" grab-cursor="true">
                         { game.map(singleGame => <swiper-slide key={singleGame.ID}> <img src={singleGame.cover} alt={singleGame.name}/> </swiper-slide>)}
