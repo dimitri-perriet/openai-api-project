@@ -10,12 +10,13 @@ import {
     createUser,
     loginApi,
 } from '../controllers/usersController.js';
+import {auth} from "../middleware/auth.middlewares.js";
 
-router.get('/', getUsers);
-router.get('/:id', getUser);
-router.delete('/delete/:id', deleteUser);
-router.put('/update/:id', updateUser);
-router.post('/create', createUser);
+router.get('/', auth, getUsers);
+router.get('/:id', auth, getUser);
+router.delete('/delete/:id', auth, deleteUser);
+router.put('/update/:id', auth, updateUser);
+router.post('/create', auth, createUser);
 router.post('/loginapi', loginApi);
 
 export default router;

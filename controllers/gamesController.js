@@ -60,7 +60,8 @@ async function getGamesCover(coverid) {
  */
 export const createGame = (req, res) => {
     // récupérer les données du corps de la requête
-    const {user_id, name, cover} = req.body
+    const {name, cover} = req.body
+    const user_id = req.user.id
 
     // vérifier si le jeu existe déjà dans la base de données
     db.query('SELECT * FROM games WHERE user_id = ? AND name = ?', [user_id, name], (err, result) => {
@@ -201,7 +202,9 @@ export const getGames = (req, res) => {
 export const updateGame = (req, res) => {
     // récupérer l'id du paramètre de route et les données du corps de la requête
     const {id} = req.params
-    const {user_id, name} = req.body
+    const {name} = req.body
+    const user_id = req.user.id
+
 
     // vérifier si le jeu existe déjà dans la base de données pour ce même utilisateur
     db.query(

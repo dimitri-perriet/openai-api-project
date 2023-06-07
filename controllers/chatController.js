@@ -6,7 +6,9 @@ const db = connectionRequest()
 
 export const createChat = (req, res) => {
 
-    const {user_id, character_id} = req.body
+    const {character_id} = req.body
+    const user_id = req.user.id
+
 
     db.query('INSERT INTO chat (user_id, character_id) VALUES (?, ?)', [user_id, character_id], (err, result) => {
             if (err) {
@@ -116,7 +118,9 @@ export const updateChat = (req, res) => {
     const {id} = req.params
 
     // récupérer les données envoyées
-    const {user_id, character_id} = req.body
+    const {character_id} = req.body
+    const user_id = req.user.id
+
 
     // mettre à jour le jeu dans la base de données
     db.query('UPDATE chat SET user_id = ?, character_id = ?, updated = NOW() WHERE id = ?', [user_id, character_id, id], (err, result) => {

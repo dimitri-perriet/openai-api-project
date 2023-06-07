@@ -7,7 +7,7 @@ export const auth = (req, res, next) => {
     try {
         const token = req.header('Authorization').split(' ')[1];
         const decoded = jwt.verify(token, config.secret_jwt);
-        req.user = decoded.user;
+        req.user = decoded;
         next();
     } catch (err) {
         res.status(401).json({ msg: 'Token is not valid' });
