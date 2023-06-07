@@ -1,7 +1,7 @@
 README
 ======
 
-Ce projet est en cours. L'architecture du code va être revue.
+Ce projet est en cours. 
 Le project utilise React pour la partie front et Node.js par la partie back. 
 
 Introduction
@@ -22,6 +22,20 @@ Fonctionnalités
 7.  Envoi d'un message dans une conversation par un utilisateur
 8.  Le système envoie automatiquement une réponse en imitant le personnage
 9.  Lorsqu'un nouveau message est envoyé dans une conversation, l'ensemble de l'historique est envoyé à OpenAI
+
+Lancement de l'API 
+-----------
+
+1. Il suffit de faire un `npm install` à la racine du projet
+2. Créer en suite un fichier `.env` dans le dossier config en y indiquant :  
+DB_PORT="PORT"  
+DB_USER="USER"  
+DB_PWD="PASSWORD"  
+DB_NAME="NOM DE LA BASE"  
+OPENAI_KEY="CLE OPENAPI"  
+SECRET_JWT="SECRET JWT"
+
+3. Lancer l'API en tapant `node app.js` depuis la racine
 
 Utilisation
 -----------
