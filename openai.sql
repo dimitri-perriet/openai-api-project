@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mar. 06 juin 2023 à 07:37
+-- Généré le : mer. 07 juin 2023 à 14:28
 -- Version du serveur : 5.7.39
 -- Version de PHP : 7.4.33
 
@@ -22,6 +22,19 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `openai` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `openai`;
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `all_users`
+-- (Voir ci-dessous la vue réelle)
+--
+CREATE TABLE `all_users` (
+                             `ID` int(11)
+    ,`mail` varchar(255)
+    ,`lastname` varchar(255)
+    ,`firstname` varchar(255)
+);
 
 -- --------------------------------------------------------
 
@@ -64,7 +77,7 @@ CREATE TABLE `games` (
                          `name` varchar(255) DEFAULT NULL,
                          `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          `updated` datetime DEFAULT NULL,
-                         `cover` varchar(255) NOT NULL
+                         `cover` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -85,6 +98,17 @@ CREATE TABLE `game_character` (
 -- --------------------------------------------------------
 
 --
+-- Doublure de structure pour la vue `game_characters`
+-- (Voir ci-dessous la vue réelle)
+--
+CREATE TABLE `game_characters` (
+                                   `game_name` varchar(255)
+    ,`character_name` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user`
 --
 
@@ -97,6 +121,24 @@ CREATE TABLE `user` (
                         `created` datetime DEFAULT CURRENT_TIMESTAMP,
                         `updated` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `all_users`
+--
+DROP TABLE IF EXISTS `all_users`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_users`  AS SELECT `user`.`ID` AS `ID`, `user`.`mail` AS `mail`, `user`.`lastname` AS `lastname`, `user`.`firstname` AS `firstname` FROM `user``user`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `game_characters`
+--
+DROP TABLE IF EXISTS `game_characters`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `game_characters`  AS SELECT `games`.`name` AS `game_name`, `game_character`.`name` AS `character_name` FROM (`games` join `game_character` on((`games`.`ID` = `game_character`.`game_id`)))  ;
 
 --
 -- Index pour les tables déchargées
