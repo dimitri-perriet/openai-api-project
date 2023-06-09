@@ -17,7 +17,7 @@ router.get('/:id', auth, getChat);
 router.get('/', auth, getChats);
 router.get('/character/:id', auth, getChatFromCharacterID);
 router.get('/user/:id', auth, getChatFromUserID);
-router.put('/update/:id', auth, updateChat);
-router.delete('/delete/:id', auth, deleteChat);
+router.put('/:id', auth, updateChat);
+router.delete('/:id', auth, deleteChat);
 
 export default router;

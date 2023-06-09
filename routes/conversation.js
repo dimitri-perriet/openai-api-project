@@ -14,8 +14,8 @@ import {
 router.post('/create', auth, createMessage);
 router.get('/:id', auth, getMessage);
 router.get('/chat/:id', auth, getMessageFromChatID);
-router.put('/update/:id', auth, updateMessage);
-router.delete('/delete/:id', auth, deleteMessage);
+router.put('/:id', auth, updateMessage);
+router.delete('/:id', auth, deleteMessage);
 router.get('/', auth, getMessages);
 
 export default router;

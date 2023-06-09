@@ -18,7 +18,7 @@ router.get('/:id', auth, getGame);
 router.get('/', auth, getGames);
 router.get('/search/:name', auth, searchGame);
 router.get('/user/:id', auth, getGamesOwner);
-router.put('/update/:id', auth, updateGame);
-router.delete('/delete/:id', auth, deleteGame);
+router.put('/:id', auth, updateGame);
+router.delete('/:id', auth, deleteGame);
 
 export default router;

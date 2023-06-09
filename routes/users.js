@@ -14,8 +14,8 @@ import {auth} from "../middleware/auth.middlewares.js";
 
 router.get('/', auth, getUsers);
 router.get('/:id', auth, getUser);
-router.delete('/delete/:id', auth, deleteUser);
-router.put('/update/:id', auth, updateUser);
+router.delete('/:id', auth, deleteUser);
+router.put('/:id', auth, updateUser);
 router.post('/create', createUser);
 router.post('/loginapi', loginApi);
 

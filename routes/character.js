@@ -15,7 +15,7 @@ router.post('/create', auth, createCharacter);
 router.get('/:id', auth, getCharacter);
 router.get('/', auth, getCharacters);
 router.get('/game/:id', auth, getCharactersFromGame);
-router.put('/update/:id', auth, updateCharacter);
-router.delete('/delete/:id', auth, deleteCharacter);
+router.put('/:id', auth, updateCharacter);
+router.delete('/:id', auth, deleteCharacter);
 
 export default router;
