@@ -4,7 +4,7 @@ import { decodeToken } from "react-jwt";
 import { register } from 'swiper/element/bundle';
 import {useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
-import { ReactComponent as Spinner } from "../assets/spinner.svg"
+import { ReactComponent as Spinner } from "../assets/spinner.svg";
 
 function Character() {
     register();
@@ -123,7 +123,7 @@ function Character() {
             };
         }
     });
-    
+
 
     return (
         <div>
@@ -155,12 +155,12 @@ function Character() {
                         <Spinner className={"ml-3"} />
                         ) : (
                             <svg className={"ml-3"} xmlns="http://www.w3.org/2000/svg" width="28.332" height="22.379" viewBox="0 0 28.332 22.379" onClick={handleAddCharacter}>
-                            <g id="checkmark-done" transform="translate(-0.844 -4.607)">
-                                <path id="Tracé_14" data-name="Tracé 14" d="M26.391,6,12.642,25.58,6.75,18.238" transform="translate(1.392)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                                <path id="Tracé_15" data-name="Tracé 15" d="M8.142,20.843,2.25,13.5" transform="translate(0 4.738)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                                <path id="Tracé_16" data-name="Tracé 16" d="M19.222,6,10.875,17.932" transform="translate(2.669)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                            </g>
-                        </svg>
+                                <g id="checkmark-done" transform="translate(-0.844 -4.607)">
+                                    <path id="Tracé_14" data-name="Tracé 14" d="M26.391,6,12.642,25.58,6.75,18.238" transform="translate(1.392)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                    <path id="Tracé_15" data-name="Tracé 15" d="M8.142,20.843,2.25,13.5" transform="translate(0 4.738)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                    <path id="Tracé_16" data-name="Tracé 16" d="M19.222,6,10.875,17.932" transform="translate(2.669)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                </g>
+                            </svg>
                             )
                         }
                     </div>
