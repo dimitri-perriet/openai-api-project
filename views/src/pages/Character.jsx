@@ -26,7 +26,7 @@ function Character() {
         const user = decodeToken(token);
 
         let myHeaders = new Headers();
-        myHeaders.append("Bearer", token);
+        myHeaders.append("Authorization", "Bearer " + token);
 
         let requestOptions = {
             method: 'GET',

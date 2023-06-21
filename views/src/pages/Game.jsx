@@ -18,7 +18,7 @@ function Game() {
 
         const data = setTimeout(() => {
             let myHeaders = new Headers();
-            myHeaders.append("Bearer", token);
+            myHeaders.append("Authorization", "Bearer " + token);
 
             let requestOptions = {
                 method: 'GET',
@@ -38,7 +38,7 @@ function Game() {
 
     async function handleAdd() {
         let myHeaders = new Headers();
-        myHeaders.append("Bearer", token);
+        myHeaders.append("Authorization", "Bearer " + token);
         myHeaders.append("Content-Type", "application/json");
 
         let raw = JSON.stringify({
