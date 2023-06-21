@@ -34,7 +34,7 @@ export const createCharacter = (req, res) => {
 
         if (result.length > 0) {
             // renvoyer une erreur si le personnage est déjà utilisé
-            return res.status(400).json({message: 'Character already exists'})
+            return res.status(409).json({message: 'Character already exists'})
         }
 
         //Récupération du nom du jeu pour l'envoyer à l'API
