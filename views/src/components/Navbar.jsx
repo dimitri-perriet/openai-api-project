@@ -27,7 +27,7 @@ function Navbar() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/dashboard">
+                    <Link to="/chat">
                         <img className="mx-auto" src="./icon/_navgame-controller.svg" alt="Jouer"/>
                     </Link>
                 </li>

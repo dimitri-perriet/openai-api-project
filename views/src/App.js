@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Navbar from "./components/Navbar";
 import Character from "./pages/Character";
+import Chat from "./pages/Chat";
 
 function App() {
     return (
@@ -33,6 +34,13 @@ function App() {
                         <ProtectedRoutes>
                             <Navbar/>
                             <Character/>
+                            <Footer/>
+                        </ProtectedRoutes>
+                    }/>
+                    <Route path="chat" element={
+                        <ProtectedRoutes>
+                            <Navbar/>
+                            <Chat/>
                             <Footer/>
                         </ProtectedRoutes>
                     }/>

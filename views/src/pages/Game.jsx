@@ -93,7 +93,7 @@ function Game() {
     return (
         <div>
             <Header title={"Super ! Ajoutons un jeu, " + user.firstname + " !"}/>
-            <input className={"flex mx-auto shadow-input rounded-[12px] focus:outline-secondary placeholder:text-[#707070} w-80 h-9 pl-7"} type="text" placeholder="Nom du jeu" onChange={e => setSearch(e.target.value)}/>
+            <input className={"flex mx-auto shadow-input rounded-lg focus:outline-secondary placeholder:text-[#707070} w-80 h-9 pl-7"} type="text" placeholder="Nom du jeu" onChange={e => setSearch(e.target.value)}/>
             <div className={"grid grid-cols-2 mt-24"}>
                 <div className={"justify-self-end mr-60"}>
                     {games.cover && (<img className={"h-5/6 shadow-input rounded"} src={games.cover} alt={search}/>)}

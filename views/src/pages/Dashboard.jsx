@@ -13,7 +13,7 @@ function Dashboard() {
             <div className="grid grid-cols-3 auto-cols-max justify-items-center mt-24">
                 <DashboardCard justifyclass="justify-self-end" image="./icon/add-circle.svg" text="Ajouter un jeu" link="/game"/>
                 <DashboardCard justifyclass="" image="./icon/person-add.svg" text="Créer un personnage" link="/character"/>
-                <DashboardCard justifyclass="justify-self-start" image="./icon/game-controller.svg" text="Accède à tes jeux"/>
+                <DashboardCard justifyclass="justify-self-start" image="./icon/game-controller.svg" text="Accède à tes jeux" link="/chat"/>
             </div>
         </div>
     )
