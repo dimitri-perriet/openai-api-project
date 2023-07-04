@@ -1,15 +1,6 @@
-// importer le module mysql
-import connectionRequest from '../config/connectionRequest.js'
 import config from "../config/config.js";
+import * as GameModel from "../models/gamesModel.js";
 
-// créer une connexion à la base de données
-const db = connectionRequest()
-
-/**
- * Search for a game by name
- * @param name : string
- * @returns json
- */
 async function getGamesInfo(name) {
     return await fetch("https://api.igdb.com/v4/games/", {
         method: 'POST',
@@ -28,11 +19,6 @@ async function getGamesInfo(name) {
         })
 }
 
-/**
- * Look for a game cover by its cover id
- * @param coverid : number
- * @returns json
- */
 async function getGamesCover(coverid) {
     return await fetch("https://api.igdb.com/v4/covers", {
         method: 'POST',
@@ -45,258 +31,137 @@ async function getGamesCover(coverid) {
         .then(response => response.json())
         .then(data => {
             return data
-
         })
         .catch(err => {
             return err
         })
 }
 
-/**
- * Create a game with the given data
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const createGame = (req, res) => {
-    // récupérer les données du corps de la requête
-    const {name, cover} = req.body
-    const user_id = req.user.id
+export const createGame = async (req, res) => {
+    const {name, cover} = req.body;
+    const user_id = req.user.id;
 
-    // vérifier si le jeu existe déjà dans la base de données
-    db.query('SELECT * FROM games WHERE user_id = ? AND name = ?', [user_id, name], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
+    try {
+        const result = await GameModel.selectGame(user_id, name);
 
         if (result.length > 0) {
-            // renvoyer une erreur si le jeu est déjà utilisé
-            return res.status(409).json({message: 'Game already exists'})
+            return res.status(409).json({message: 'Game already exists'});
         }
 
-        // insérer le nouveau jeu dans la base de données
-        db.query(
-            'INSERT INTO games (user_id, name, cover) VALUES (?, ?, ?)',
-            [user_id, name, cover],
-            (err, result) => {
-                if (err) {
-                    // renvoyer une erreur en cas d'échec de la requête
-                    return res.status(500).json({message: err.message})
-                }
+        const insertResult = await GameModel.insertGame(user_id, name, cover);
+        res.status(201).json({message: 'Game created', id: insertResult.insertId});
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
 
-                // renvoyer un succès avec l'id du nouveau jeu
-                res.status(201).json({message: 'Game created', id: result.insertId})
-            }
-        )
-    })
-}
-
-/**
- * Search a game by name
- * @param req : object
- * @param res : object
- * @returns res
- */
 export const searchGame = async (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {name} = req.params
+    const {name} = req.params;
 
+    try {
+        let game = await getGamesInfo(name);
 
-    //appel api à https://api.igdb.com/v4/games/ pour avoir les infos
-    let game = await getGamesInfo(name)
-
-    if ( game instanceof Error) {
-        // renvoyer une erreur si le jeu n'existe pas
-        return res.status(500).json({message: 'Internal server error'})
-    } else {
-        if (game.length === 0 ) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Game not found'})
+        if (game instanceof Error) {
+            return res.status(500).json({message: 'Internal server error'});
+        } else if (game.length === 0) {
+            return res.status(404).json({message: 'Game not found'});
         } else {
-            let imgurl = await getGamesCover(game[0].cover)
+            let imgurl = await getGamesCover(game[0].cover);
 
             if (imgurl instanceof Error) {
-                // renvoyer une erreur si le jeu n'existe pas
-                return res.status(500).json({message: 'Internal server error'})
+                return res.status(500).json({message: 'Internal server error'});
             }
 
-            if (imgurl[0].status === 400) {
-                return res.status(404).json({message: 'Game not found'})
-            }
+            let date = new Date(game[0].first_release_date * 1000);
+            game[0].first_release_date = date.toLocaleDateString("fr");
+            imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big");
+            game[0].cover = imgurl[0].url;
 
-            let date = new Date(game[0].first_release_date * 1000)
-            game[0].first_release_date = date.toLocaleDateString("fr")
-            imgurl[0].url = imgurl[0].url.replace("thumb", "cover_big")
-            game[0].cover = imgurl[0].url
-
-
-
-            // renvoyer un succès avec les données du jeu
-            res.status(200).json(game[0])
+            res.status(200).json(game[0]);
         }
+    } catch(err) {
+        res.status(500).json({message: err.message});
     }
+};
 
+export const getGame = async (req, res) => {
+    const {id} = req.params;
 
-
-}
-
-/**
- * Get a game by id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getGame = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
-
-    // sélectionner le jeu par son id dans la base de données
-    db.query('SELECT * FROM games WHERE ID = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
+    try {
+        const result = await GameModel.selectGameByID(id);
 
         if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Game not found'})
+            return res.status(404).json({message: 'Game not found'});
         }
 
-        // renvoyer un succès avec les données du jeu
-        const games = result[0]
+        res.status(200).json(result[0]);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
 
-        return res.status(200).json(games)
-    })
-}
+export const getGames = async (req, res) => {
+    try {
+        const result = await GameModel.selectAllGames();
 
-/**
- * Get all games
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getGames = (req, res) => {
-    // sélectionner tous les jeux dans la base de données
-    db.query('SELECT * FROM games', (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
+
+export const updateGame = async (req, res) => {
+    const {id} = req.params;
+    const {name} = req.body;
+    const user_id = req.user.id;
+
+    try {
+        const existingGame = await GameModel.selectGame(user_id, name);
+
+        if (existingGame.length > 0) {
+            return res.status(400).json({message: 'Game already exists'});
         }
 
-        // renvoyer un succès avec les données des jeux
-        const games = result.map(game => {
-            return game
-        })
+        const updateResult = await GameModel.updateGameByID(name, id);
 
-        return res.status(200).json(games)
-    })
-}
-
-/**
- * Update a game with the given data
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const updateGame = (req, res) => {
-    // récupérer l'id du paramètre de route et les données du corps de la requête
-    const {id} = req.params
-    const {name} = req.body
-    const user_id = req.user.id
-
-
-    // vérifier si le jeu existe déjà dans la base de données pour ce même utilisateur
-    db.query(
-        'SELECT * FROM games WHERE name = ? AND user_id = ? AND ID != ?',
-        [name, user_id, id],
-        (err, result) => {
-            if (err) {
-                // renvoyer une erreur en cas d'échec de la requête
-                return res.status(500).json({message: err.message})
-            }
-
-            if (result.length > 0) {
-                // renvoyer une erreur si le nom est déjà utilisé par l'utilisateur
-                return res.status(400).json({message: 'Game already exists'})
-            }
-
-            // mettre à jour le jeu dans la base de données
-            db.query(
-                'UPDATE games SET name = ?, updated = NOW() WHERE ID = ?',
-                [name, id],
-                (err, result) => {
-                    if (err) {
-                        // renvoyer une erreur en cas d'échec de la requête
-                        return res.status(500).json({message: err.message})
-                    }
-
-                    if (result.affectedRows === 0) {
-                        // renvoyer une erreur si le jeu n'existe pas
-                        return res.status(404).json({message: 'Game not found'})
-                    }
-
-                    // renvoyer un succès avec le nombre de lignes modifiées
-                    return res.status(200).json({message: 'Game updated', rowsAffected: result.affectedRows})
-                }
-            )
-        }
-    )
-}
-
-/**
- * Delete a game by id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const deleteGame = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const id = req.params.id
-    // supprimer le jeu dans la base de données
-    db.query('DELETE FROM games WHERE ID = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+        if (updateResult.affectedRows === 0) {
+            return res.status(404).json({message: 'Game not found'});
         }
 
-        if (result.affectedRows === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Game not found'})
+        res.status(200).json({message: 'Game updated', rowsAffected: updateResult.affectedRows});
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
+
+export const deleteGame = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const deleteResult = await GameModel.deleteGameByID(id);
+
+        if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({message: 'Game not found'});
         }
 
-        // renvoyer un succès avec le nombre de lignes supprimées
-        return res.status(200).json({message: 'Game deleted', rowsAffected: result.affectedRows})
-    })
-}
+        res.status(200).json({message: 'Game deleted', rowsAffected: deleteResult.affectedRows});
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
 
-/**
- * Get all games by user id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getGamesOwner = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
+export const getGamesOwner = async (req, res) => {
+    const {id} = req.params;
 
-    // sélectionner les jeux par son id user dans la base de données
-    db.query('SELECT * FROM games WHERE user_id = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
+    try {
+        const result = await GameModel.selectGamesByUserID(id);
 
         if (result.length === 0) {
-            // renvoyer une erreur si aucun jeu n'existe pas
-            return res.status(404).json({message: 'Games not found or incorrect user id'})
+            return res.status(404).json({message: 'Games not found or incorrect user id'});
         }
 
-        // renvoyer un succès avec les données des jeux
-        const games = result.map(game => {
-            return game
-        })
-
-        return res.status(200).json(games)
-    })
-}
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};

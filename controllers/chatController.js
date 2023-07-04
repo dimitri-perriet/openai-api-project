@@ -1,174 +1,103 @@
-import connectionRequest from "../config/connectionRequest.js";
+import * as chatModel from '../models/chatModel.js';
 
-// créer une connexion à la base de données
-const db = connectionRequest()
+export const createChat = async (req, res) => {
+    const {character_id} = req.body;
+    const user_id = req.user.id;
 
-
-export const createChat = (req, res) => {
-
-    const {character_id} = req.body
-    const user_id = req.user.id
-
-    // vérifier si le chat existe déjà dans la base de données
-    db.query('SELECT * FROM chat WHERE user_id = ? AND character_id = ?', [user_id, character_id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+    try {
+        const result = await chatModel.createChat(user_id, character_id);
+        if (result.status === 'exists') {
+            res.status(409).json({message: 'Chat already exists', id: result.id});
+        } else {
+            res.status(201).json({message: 'Chat created', id: result.id});
         }
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
 
-        if (result.length !== 0) {
-            // renvoyer ID du chat s'il existe déjà
-            return res.status(409).json({message: 'Chat already exists', id: result[0].ID})
+export const getChat = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const result = await chatModel.getChat(id);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error.message === 'Chat not found') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: 'Internal server error'});
         }
+    }
+}
 
+export const getChatFromUserID = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const result = await chatModel.getChatFromUserID(id);
         if (result.length === 0) {
-            db.query('INSERT INTO chat (user_id, character_id) VALUES (?, ?)', [user_id, character_id], (err, result) => {
-                if (err) {
-                    // renvoyer une erreur en cas d'échec de la requête
-                    return res.status(500).json({message: err.message})
-                }
-
-                return res.status(201).json({message: 'Chat created', id: result.insertId})
-
-            });
+            res.status(404).json({message: 'No chats found for this user ID'});
+        } else {
+            res.status(200).json(result);
         }
-    });
-
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
 }
 
-export const getChat = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
+export const getChatFromCharacterID = async (req, res) => {
+    const {id} = req.params;
 
-    // sélectionner le jeu par son id dans la base de données
-    db.query('SELECT * FROM chat WHERE ID = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
+    try {
+        const result = await chatModel.getChatFromCharacterID(id);
         if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Chat not found'})
+            res.status(404).json({message: 'No chats found for this character ID'});
+        } else {
+            res.status(200).json(result);
         }
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(result[0])
-    })
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
 }
 
-export const getChatFromUserID = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
-
-    // sélectionner la conv par son id dans la base de données
-    db.query('SELECT * FROM chat WHERE user_id = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si la conv n'existe pas
-            return res.status(404).json({message: 'Chat not found'})
-        }
-
-        // renvoyer un succès avec les données de la conv
-        const chats = result.map(chat => {
-            return chat
-        })
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(chats)
-    })
+export const getChats = async (req, res) => {
+    try {
+        const result = await chatModel.getChats();
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
 }
 
-export const getChatFromCharacterID = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
+export const updateChat = async (req, res) => {
+    const {id} = req.params;
+    const {character_id} = req.body;
+    const user_id = req.user.id;
 
-    // sélectionner la conv par son id dans la base de données
-    db.query('SELECT * FROM chat WHERE character_id = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+    try {
+        const result = await chatModel.updateChat(user_id, character_id, id);
+        if (result === 0) {
+            res.status(404).json({message: 'Chat not found'});
+        } else {
+            res.status(200).json({message: 'Chat updated'});
         }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si la conv n'existe pas
-            return res.status(404).json({message: 'Chat not found'})
-        }
-
-        // renvoyer un succès avec les données de la conv
-        const chats = result.map(chat => {
-            return chat
-        })
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(chats)
-    })
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
 }
 
-export const getChats = (req, res) => {
-    // sélectionner toutes les conv dans la base de données
-    db.query('SELECT * FROM chat', (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+export const deleteChat = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const result = await chatModel.deleteChat(id);
+        if (result === 0) {
+            res.status(404).json({message: 'Chat not found'});
+        } else {
+            res.status(200).json({message: 'Chat deleted'});
         }
-
-        // renvoyer un succès avec les données des jeux
-        const chats = result.map(chat => {
-            return chat
-        })
-
-        return res.status(200).json(chats)
-    })
-}
-
-export const updateChat = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
-
-    // récupérer les données envoyées
-    const {character_id} = req.body
-    const user_id = req.user.id
-
-
-    // mettre à jour le jeu dans la base de données
-    db.query('UPDATE chat SET user_id = ?, character_id = ?, updated = NOW() WHERE id = ?', [user_id, character_id, id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
-        if (result.affectedRows === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Chat not found'})
-        }
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json({message: 'Chat updated'})
-    })
-}
-
-export const deleteChat = (req, res) => {
-    // récupérer l'id du paramètre de route
-    const {id} = req.params
-
-    // supprimer le jeu de la base de données
-    db.query('DELETE FROM chat WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
-        if (result.affectedRows === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Chat not found'})
-        }
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json({message: 'Chat deleted'})
-    })
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
 }

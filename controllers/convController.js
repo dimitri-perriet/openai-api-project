@@ -1,20 +1,9 @@
-import connectionRequest from '../config/connectionRequest.js'
 import openaiAPI from "../config/openaiConfig.js";
-
-// créer une connexion à la base de données
-const db = connectionRequest()
+import * as MessageModel from "../models/convModel.js";
 
 const openai = openaiAPI()
 
-/**
- * Generate a message from a conversation
- * @param conv : []
- * @param game : string
- * @param character : string
- * @returns string
- */
 async function generateMessage(conv, game, character) {
-
     let messagesList = []
     messagesList.push({
         role: "system",
@@ -36,223 +25,96 @@ async function generateMessage(conv, game, character) {
     return completion.data.choices[0].message.content.trim();
 }
 
-/**
- * Create a message in a chat
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const createMessage = (req, res) => {
+export const createMessage = async (req, res) => {
     const {chat_id, message} = req.body
 
-    db.query('INSERT INTO conversation (type, chat_id, message) VALUES (?, ?, ?)', ["user", chat_id, message], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
+    try {
+        await MessageModel.insertMessage("user", chat_id, message);
 
+        const result = await MessageModel.selectGameName(chat_id);
+        let gameName = result[0].game_name
+        let characterName = result[0].character_name
 
-        //Récupération du nom du jeu pour l'envoyer à l'API
-        db.query('SELECT g.name AS game_name, ca.name as character_name FROM conversation m INNER JOIN chat ch ON (m.chat_id=ch.ID) INNER JOIN game_character ca ON (ch.character_id=ca.ID) INNER JOIN games g ON (ca.game_id=g.ID) WHERE ch.ID = ? GROUP BY ch.ID', [chat_id], (err, result) => {
-            if (err) {
-                // renvoyer une erreur en cas d'échec de la requête
-                return res.status(500).json({message: err.message})
-            }
+        const messages = await MessageModel.selectAllFromChatID(chat_id);
 
-            let gameName = result[0].game_name
-            let characterName = result[0].character_name
+        let response = await generateMessage(messages, gameName, characterName)
 
+        await MessageModel.insertMessage("assistant", chat_id, response);
 
-            new Promise((resolve, reject) => {
+        res.status(201).json({message: 'Message created', chat: response, id: result.insertId})
 
-                db.query('SELECT * FROM conversation WHERE chat_id = ? ORDER BY created ASC', [chat_id], (err, result) => {
-                    if (err) {
-                        // renvoyer une erreur en cas d'échec de la requête
-                        return res.status(500).json({message: err.message})
-                    }
-
-                    // renvoyer un succès avec les données des personnages
-                    const conv = result.map(message => {
-                        return message
-                    })
-
-                    let response = generateMessage(conv, gameName, characterName)
-                    resolve(response)
-                })
-
-            }).then((response) => {
-                db.query(
-                    'INSERT INTO conversation (type, chat_id, message) VALUES (?, ?, ?)',
-                    ["assistant", chat_id, response],
-                    (err, result) => {
-                        if (err) {
-                            // renvoyer une erreur en cas d'échec de la requête
-                            return res.status(500).json({message: err.message})
-                        }
-
-                        // renvoyer un succès avec l'id du nouveau personnage
-                        return res.status(201).json({message: 'Message created', chat: response, id: result.insertId})
-                    }
-                )
-            }).catch((err) => {
-                return res.status(500).json({message: err.message})
-            });
-        })
-    })
-
+    } catch (err) {
+        res.status(500).json({message: 'Internal server error'})
+    }
 }
 
-
-/**
- * Get all messages
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getMessages = (req, res) => {
-
-    // sélectionner le jeu par son id dans la base de données
-    db.query('SELECT * FROM conversation ORDER BY created ASC', (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+export const getMessages = async (req, res) => {
+    try {
+        const messages = await MessageModel.selectAll();
+        if (!messages.length) {
+            res.status(404).json({message: 'Conversation not found'})
+        } else {
+            res.status(200).json(messages)
         }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Conversation not found'})
-        }
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(result)
-    })
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 }
 
-/**
- * Get a message by message id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getMessage = (req, res) => {
-    // récupérer l'id du paramètre de route
+export const getMessage = async (req, res) => {
     const {id} = req.params
 
-    // sélectionner le jeu par son id dans la base de données
-    db.query('SELECT * FROM conversation WHERE ID = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+    try {
+        const message = await MessageModel.selectByID(id);
+        if (!message.length) {
+            res.status(404).json({message: 'Message not found'})
+        } else {
+            res.status(200).json(message[0])
         }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Message not found'})
-        }
-
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(result[0])
-    })
-
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 }
 
-/**
- * Get all messages from a chat
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const getMessageFromChatID = (req, res) => {
-    // récupérer l'id du paramètre de route
+export const getMessageFromChatID = async (req, res) => {
     const {id} = req.params
 
-    // sélectionner la conv par son id dans la base de données
-    db.query('SELECT * FROM conversation WHERE chat_id = ? ORDER BY created ASC', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+    try {
+        const messages = await MessageModel.selectAllFromChatID(id);
+        if (!messages.length) {
+            res.status(404).json({message: 'Conversation not found'})
+        } else {
+            res.status(200).json(messages)
         }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si la conv n'existe pas
-            return res.status(404).json({message: 'Conversation not found'})
-        }
-
-        const messages = result.map(message => {
-            return message
-        })
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json(messages)
-    })
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 }
 
-/**
- * Delete a message by message id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const deleteMessage = (req, res) => {
-    // récupérer l'id du paramètre de route
+export const deleteMessage = async (req, res) => {
     const {id} = req.params
 
-    //vérifier si le message existe
-    db.query('SELECT * FROM conversation WHERE ID = ?', [id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
+    try {
+        const message = await MessageModel.selectByID(id);
+        if (!message.length) {
+            res.status(404).json({message: 'Message not found'})
+        } else {
+            await MessageModel.deleteByID(id);
+            res.status(200).json({message: 'Message deleted'})
         }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Message not found'})
-        }
-
-        // sélectionner le jeu par son id dans la base de données
-        db.query('DELETE FROM conversation WHERE ID = ?', [id], (err, result) => {
-            if (err) {
-                // renvoyer une erreur en cas d'échec de la requête
-                return res.status(500).json({message: err.message})
-            }
-
-            if (result.length === 0) {
-                // renvoyer une erreur si le jeu n'existe pas
-                return res.status(404).json({message: 'Message not found'})
-            }
-
-            // renvoyer un succès avec les données du jeu
-            return res.status(200).json({message: 'Message deleted'})
-        })
-    })
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 }
 
-/**
- * Update a message by message id
- * @param req : object
- * @param res : object
- * @returns res
- */
-export const updateMessage = (req, res) => {
-    // récupérer l'id du paramètre de route
+export const updateMessage = async (req, res) => {
     const {id} = req.params
     const {message} = req.body
 
-    // sélectionner le jeu par son id dans la base de données
-    db.query('UPDATE conversation SET message = ?, updated = NOW() WHERE ID = ?', [message, id], (err, result) => {
-        if (err) {
-            // renvoyer une erreur en cas d'échec de la requête
-            return res.status(500).json({message: err.message})
-        }
-
-        if (result.length === 0) {
-            // renvoyer une erreur si le jeu n'existe pas
-            return res.status(404).json({message: 'Message not found'})
-        }
-
-        // renvoyer un succès avec les données du jeu
-        return res.status(200).json({message: 'Message updated'})
-    })
+    try {
+        await MessageModel.updateByID(message, id);
+        res.status(200).json({message: 'Message updated'})
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 }
-
