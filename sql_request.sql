@@ -9,11 +9,11 @@ GRANT SELECT ON openai.* TO 'read_user'@'localhost';
 FLUSH PRIVILEGES;
 
 
--- -- CREATION DE 2 VUES
+-- -- CREATION DE 2 VUES - Déjà présente dans le script de création de la base de données.
 
 
 -- Vue simple pour obtenir tous les utilisateurs
-CREATE VIEW all_users AS
+/*CREATE VIEW all_users AS
 SELECT ID, mail, lastname, firstname
 FROM user;
 
@@ -22,7 +22,7 @@ FROM user;
 CREATE VIEW game_characters AS
 SELECT games.name AS game_name, game_character.name AS character_name
 FROM games
-    JOIN game_character ON games.ID = game_character.game_id;
+    JOIN game_character ON games.ID = game_character.game_id;*/
 
 
 -- -- 3 REQUETES SUR LA BASE DE DONNEES

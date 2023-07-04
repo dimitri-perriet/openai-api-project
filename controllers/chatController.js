@@ -9,17 +9,30 @@ export const createChat = (req, res) => {
     const {character_id} = req.body
     const user_id = req.user.id
 
-
-    db.query('INSERT INTO chat (user_id, character_id) VALUES (?, ?)', [user_id, character_id], (err, result) => {
-            if (err) {
-                // renvoyer une erreur en cas d'échec de la requête
-                return res.status(500).json({message: err.message})
-            }
-
-            return res.status(201).json({message: 'Chat created', id: result.insertId})
-
+    // vérifier si le chat existe déjà dans la base de données
+    db.query('SELECT * FROM chat WHERE user_id = ? AND character_id = ?', [user_id, character_id], (err, result) => {
+        if (err) {
+            // renvoyer une erreur en cas d'échec de la requête
+            return res.status(500).json({message: err.message})
         }
-    )
+
+        if (result.length !== 0) {
+            // renvoyer ID du chat s'il existe déjà
+            return res.status(409).json({message: 'Chat already exists', id: result[0].ID})
+        }
+
+        if (result.length === 0) {
+            db.query('INSERT INTO chat (user_id, character_id) VALUES (?, ?)', [user_id, character_id], (err, result) => {
+                if (err) {
+                    // renvoyer une erreur en cas d'échec de la requête
+                    return res.status(500).json({message: err.message})
+                }
+
+                return res.status(201).json({message: 'Chat created', id: result.insertId})
+
+            });
+        }
+    });
 
 }
 

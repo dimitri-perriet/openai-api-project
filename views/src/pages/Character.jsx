@@ -149,7 +149,7 @@ function Character() {
                             </g>
                         </svg>
 
-                        <input ref={characterInputRef} className={"ml-10 flex mx-auto shadow-input rounded-full focus:outline-secondary placeholder:text-[#707070} w-80 h-9 pl-7"} type="text" placeholder="Nom de votre personnage ..." value={character} onChange={(e) => setCharacter(e.target.value)} onKeyDown={handleKeyDown}/>
+                        <input ref={characterInputRef} className={"ml-10 flex mx-auto shadow-input rounded-full focus:outline-secondary placeholder:text-[#707070] w-80 h-9 pl-7"} type="text" placeholder="Nom de votre personnage ..." value={character} onChange={(e) => setCharacter(e.target.value)} onKeyDown={handleKeyDown}/>
 
                         {loading ? (
                             <Spinner className={"ml-3"} />

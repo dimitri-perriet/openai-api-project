@@ -112,7 +112,7 @@ export const createMessage = (req, res) => {
 export const getMessages = (req, res) => {
 
     // sélectionner le jeu par son id dans la base de données
-    db.query('SELECT * FROM conversation ORDER BY created DESC', (err, result) => {
+    db.query('SELECT * FROM conversation ORDER BY created ASC', (err, result) => {
         if (err) {
             // renvoyer une erreur en cas d'échec de la requête
             return res.status(500).json({message: err.message})
@@ -168,7 +168,7 @@ export const getMessageFromChatID = (req, res) => {
     const {id} = req.params
 
     // sélectionner la conv par son id dans la base de données
-    db.query('SELECT * FROM conversation WHERE chat_id = ? ORDER BY created DESC', [id], (err, result) => {
+    db.query('SELECT * FROM conversation WHERE chat_id = ? ORDER BY created ASC', [id], (err, result) => {
         if (err) {
             // renvoyer une erreur en cas d'échec de la requête
             return res.status(500).json({message: err.message})
