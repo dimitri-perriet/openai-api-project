@@ -18,6 +18,9 @@ function Chat() {
     let [inputMessage, setInputMessage] = useState("");
 
     let [loading, setLoading] = React.useState(false);
+    let messagesEndRef = useRef(null);
+
+
 
     const swiperRef = useRef(null);
 
@@ -73,6 +76,10 @@ function Chat() {
         }
 
     }, [currentGame]);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [chatMessages]);
 
     function handleCharacterSelect(event) {
         const characterId = chosenCharacter;
@@ -187,11 +194,15 @@ function Chat() {
         <div>
             {convID &&
                 <div className="flex flex-col h-full justify-center">
-                    <div className="overflow-auto mb-auto flex flex-col justify-center ml-32 mr-52">
-                        {chatMessages.map((message, index) => (
-                            <div key={index} className={`m-2 p-2 rounded-lg ${message.user.role === "user" ? "bg-tertiary text-white self-end w-1/3" : "bg-gray-300 text-black self-start w-1/3"}`}>
-                                {message.content}
-                            </div>
+                    <div className="overflow-y-auto mb-auto flex flex-col justify-center ml-32 mr-52 h-[80vh]">
+                          {chatMessages.map((message, index) => (
+                                <div
+                                    ref={index === chatMessages.length - 1 ? messagesEndRef : null}
+                                    key={index}
+                                    className={`m-2 p-2 rounded-lg ${message.user.role === "user" ? "bg-tertiary text-white self-end w-1/3" : "bg-gray-300 text-black self-start w-1/3"}`}
+                                >
+                                    {message.content}
+                                </div>
                         ))}
                     </div>
                     <div className="flex items-center fixed bottom-5 left-1/3 z-10">
