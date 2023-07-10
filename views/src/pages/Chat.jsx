@@ -194,7 +194,7 @@ function Chat() {
         <div>
             {convID &&
                 <div className="flex flex-col h-full justify-center">
-                    <div className="overflow-y-auto mb-auto flex flex-col justify-center ml-32 mr-52 h-[80vh]">
+                    <div className="overflow-y-auto mb-auto flex flex-col ml-32 mr-52 h-[80vh]">
                           {chatMessages.map((message, index) => (
                                 <div
                                     ref={index === chatMessages.length - 1 ? messagesEndRef : null}
