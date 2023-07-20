@@ -115,12 +115,10 @@ function Character() {
 
     useEffect(() => {
         if (swiperRef.current) {
-            const swiperEl = swiperRef.current.swiper;
-            swiperEl.on('slideChangeTransitionEnd', handleEmptyImg);
-
-            return () => {
-                swiperEl.off('slideChangeTransitionEnd', handleEmptyImg);
-            };
+            const swiperEl = document.querySelector('swiper-container');
+            swiperEl.addEventListener('slidechange', (event) => {
+                handleEmptyImg();
+            } );
         }
     });
 

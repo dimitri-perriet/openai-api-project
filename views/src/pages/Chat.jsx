@@ -49,12 +49,10 @@ function Chat() {
 
     useEffect(() => {
         if (swiperRef.current) {
-            const swiperEl = swiperRef.current.swiper;
-            swiperEl.on('slideChangeTransitionEnd', handleEmptyImg);
-
-            return () => {
-                swiperEl.off('slideChangeTransitionEnd', handleEmptyImg);
-            };
+            const swiperEl = document.querySelector('swiper-container');
+            swiperEl.addEventListener('slidechange', (event) => {
+                handleEmptyImg();
+            } );
         }
     });
 
@@ -117,6 +115,13 @@ function Chat() {
             });
     }
 
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            if (loading === false) {
+                handleSendMessage();
+            }
+        }
+    }
     const handleSendMessage = () => {
         if (loading) {
             return;
@@ -125,10 +130,8 @@ function Chat() {
         if (inputMessage === "") {
             return;
         }
-        //Ajout a chatMessages
         setChatMessages((prevMessages) => [...prevMessages, { user: { role : "user" }, content: inputMessage }]);
         setInputMessage("");
-        // Logique d'envoi du message
         const token = JSON.parse(sessionStorage.getItem('token'));
 
         let myHeaders = new Headers();
@@ -157,7 +160,6 @@ function Chat() {
                 console.log('error', error);
                 setLoading(false);
             });
-        // Ajoutez votre logique pour envoyer le message à l'API ici.
 
     }
 
@@ -174,7 +176,6 @@ function Chat() {
         fetch("/api/message/chat/" + convID, requestOptions)
             .then(response => response.json())
             .then(data => {
-                    //iterer data pour les mettre dans chatMessages
                     for (let i = 0; i < data.length; i++) {
                         setChatMessages((prevMessages) => [...prevMessages, { user: { role : data[i].type}, content: data[i].message }]);
                     }
@@ -205,9 +206,14 @@ function Chat() {
                                 </div>
                         ))}
                     </div>
-                    <div className="flex items-center fixed bottom-5 left-1/3 z-10">
-                        <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} className="flex-grow m-2 p-2 border rounded-lg w-80" placeholder="Tapez votre message..."/>
-                        <button onClick={handleSendMessage} className="m-2 p-2 bg-blue-500 text-white rounded-lg">Envoyer</button>
+                    <div className="flex items-center fixed bottom-5 left-1/2 -translate-x-1/2 z-10">
+                        <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} className="flex-grow m-2 p-2 border-2 border-secondary rounded-lg w-80" onKeyDown={handleKeyDown} placeholder="Tapez votre message..."/>
+                        {loading ? (
+                                <Spinner className={"m-2"} />
+                            ) : (
+                                <button onClick={handleSendMessage} className="m-2 p-2 bg-secondary text-white rounded-lg">Envoyer</button>
+                            )
+                        }
                     </div>
                 </div>
             }
