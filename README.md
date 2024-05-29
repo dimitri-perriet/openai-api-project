@@ -1,7 +1,6 @@
 README
 ======
 
-Ce projet est en cours. 
 Le project utilise React pour la partie front et Node.js par la partie back. 
 
 Introduction
